@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alakamisy – AKANJO LAFO VIDY INDRINDRA</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:#111318;color:#e8e8e8}
+#toolbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(17,19,24,.96);display:flex;align-items:center;padding:0 16px;z-index:100;border-bottom:1px solid #2e3347;transform:translateY(-100%);transition:transform .35s}
+#toolbar.visible{transform:translateY(0)}
+#toolbar .tb-title{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e8e8e8;flex:1}
+#font-btn{position:fixed;top:12px;right:16px;z-index:200;background:rgba(34,39,54,.92);border:1px solid #2e3347;border-radius:8px;color:#e8e8e8;cursor:pointer;padding:6px 12px;font-size:14px;font-weight:600}
+#fontsize-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;align-items:flex-end}
+#fontsize-overlay.open{display:flex}
+#fontsize-sheet{background:#1a1e27;border-radius:20px 20px 0 0;width:100%;padding:0 0 32px;transform:translateY(100%);transition:transform .35s;border-top:1px solid #2e3347}
+#fontsize-overlay.open #fontsize-sheet{transform:translateY(0)}
+#fontsize-handle{width:40px;height:4px;background:#2e3347;border-radius:2px;margin:10px auto 0}
+#fontsize-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid #2e3347}
+#fontsize-header h3{font-size:17px;color:#c9a84c}
+#fontsize-close{background:#222736;border:none;color:#e8e8e8;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer}
+#fontsize-body{padding:24px}
+.fs-preview{background:#222736;border:1px solid #2e3347;border-radius:12px;padding:14px 16px;margin-bottom:24px;line-height:1.7;color:#e8e8e8}
+.fs-controls{display:flex;align-items:center;gap:14px}
+.fs-icon{font-size:13px;color:#9aa0b2;font-weight:600}
+.fs-icon.big{font-size:20px}
+#font-seekbar{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:#2e3347;outline:none;cursor:pointer}
+#font-seekbar::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#4e7bdb;border:3px solid #fff;cursor:pointer}
+#fs-value-label{font-size:13px;color:#7aa3f5;font-weight:600;min-width:36px;text-align:right}
+.fs-presets{display:flex;gap:8px;margin-top:20px;justify-content:center;flex-wrap:wrap}
+.fs-preset-btn{background:#222736;border:1px solid #2e3347;border-radius:8px;color:#9aa0b2;font-family:Georgia,serif;font-size:13px;padding:6px 14px;cursor:pointer}
+.fs-preset-btn.active{background:#4e7bdb;border-color:#4e7bdb;color:#fff}
+#hero{position:relative;height:260px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 24px 32px;text-align:center}
+#hero-bg{position:absolute;inset:0;background-image:url('file:///android_asset/header.jpg');background-size:cover;background-position:center;filter:brightness(.45)}
+#hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,#111318 100%)}
+#hero-content{position:relative;z-index:1}
+#hero h1{font-size:22px;font-weight:700;letter-spacing:1px;line-height:1.25;text-shadow:0 2px 12px rgba(0,0,0,.8);margin-bottom:8px}
+#hero .date-tag{font-size:13px;color:rgba(255,255,255,.7)}
+#content{max-width:680px;margin:0 auto;padding:24px 20px 80px}
+.info-block{background:#1a1e27;border:1px solid #2e3347;border-radius:12px;padding:16px 18px;margin-bottom:16px;border-left:3px solid #c9a84c}
+.info-block .label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c9a84c;margin-bottom:8px;font-weight:600}
+.info-block p{font-size:14px;line-height:1.65;color:#9aa0b2;text-align:justify}
+.section-header{margin:28px 0 18px;display:flex;align-items:center;gap:12px}
+.section-header .pill{background:#222736;border:1px solid #2e3347;border-radius:20px;padding:4px 14px;font-size:11px;letter-spacing:1px;color:#9aa0b2;text-transform:uppercase;white-space:nowrap}
+.section-header .line{flex:1;height:1px;background:#2e3347}
+.section-header h2{font-size:16px;color:#c9a84c;white-space:nowrap}
+.body-text{font-size:16px;line-height:1.8;color:#e8e8e8;margin-bottom:16px;text-align:justify}
+.v-link{color:#7aa3f5;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;white-space:nowrap}
+.quote-block{background:#1a1e27;border-left:3px solid #4e7bdb;border-radius:0 12px 12px 0;padding:16px 18px;margin:20px 0;font-style:italic;font-size:15px;line-height:1.7;color:#9aa0b2;text-align:justify}
+.quote-block cite{display:block;margin-top:8px;font-size:12px;color:#9aa0b2;font-style:normal}
+.question-card{background:#1a1e27;border:1px solid #2e3347;border-radius:16px;padding:20px;margin:20px 0}
+.question-card .q-text{font-size:17px;font-weight:600;line-height:1.6;margin-bottom:16px;color:#e8e8e8;text-align:justify}
+.verse-note-group{background:#222736;border:1px solid #2e3347;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.verse-note-group:last-child{margin-bottom:0}
+.note-solo{width:100%;min-height:80px;background:rgba(0,0,0,.25);border:1px solid #2e3347;border-radius:8px;color:#e8e8e8;font-family:Georgia,serif;font-size:14px;padding:10px 12px;resize:vertical;outline:none;line-height:1.6}
+.note-solo::placeholder{color:#555}
+.note-solo:focus{border-color:#4e7bdb}
+.save-ind{font-size:11px;color:#7aa3f5;margin-top:4px;opacity:0;transition:opacity .4s;text-align:right}
+.save-ind.show{opacity:1}
+.bullet-list{padding-left:0;margin:12px 0 16px;list-style:none}
+.bullet-list li{padding:8px 0 8px 20px;border-bottom:1px solid #2e3347;color:#e8e8e8;font-size:16px;line-height:1.7;position:relative;text-align:justify}
+.bullet-list li:before{content:'\2022';color:#c9a84c;position:absolute;left:0;font-size:18px}
+.fanontaniana-title{font-size:20px;font-weight:700;color:#c9a84c;margin:28px 0 4px}
+.fanontaniana-sub{font-size:13px;color:#9aa0b2;margin-bottom:20px;letter-spacing:.5px}
+.numbered-q{background:#1a1e27;border:1px solid #2e3347;border-radius:16px;padding:20px;margin:12px 0}
+.numbered-q .num{font-size:13px;font-weight:700;color:#c9a84c;margin-bottom:8px}
+.numbered-q .q-text{font-size:16px;font-weight:600;line-height:1.6;margin-bottom:14px;color:#e8e8e8;text-align:justify}
+#popup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:flex-end}
+#popup-overlay.open{display:flex}
+#popup{background:#1a1e27;border-radius:20px 20px 0 0;width:100%;max-height:75vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .35s}
+#popup-overlay.open #popup{transform:translateY(0)}
+#popup-handle{width:40px;height:4px;background:#2e3347;border-radius:2px;margin:10px auto 0;flex-shrink:0}
+#popup-header{display:flex;align-items:center;padding:14px 20px 12px;gap:10px;border-bottom:1px solid #2e3347;flex-shrink:0}
+#popup-header h3{font-size:17px;flex:1;color:#e8e8e8}
+#popup-close{background:#222736;border:none;color:#e8e8e8;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer}
+#popup-body{overflow-y:auto;padding:20px;flex:1;font-size:15px;line-height:1.9;color:#e8e8e8;text-align:justify}
+#popup-body .vn{font-weight:700;color:#7aa3f5;margin-right:6px}
+#popup-body p{margin-bottom:12px}</style>
+</head>
+<body>
+<div id="toolbar"><span class="tb-title">Alakamisy – AKANJO LAFO VIDY INDRINDRA</span></div>
+<button id="font-btn" onclick="openFontSheet()">A&#8314;</button>
+<div id="fontsize-overlay" onclick="closeFontOutside(event)">
+  <div id="fontsize-sheet">
+    <div id="fontsize-handle"></div>
+    <div id="fontsize-header"><h3>Haben'ny soratra</h3><button id="fontsize-close" onclick="closeFontSheet()">&#x2715;</button></div>
+    <div id="fontsize-body">
+      <div class="fs-preview" id="fs-preview">Ny teninao dia nataoko tao am-poko.</div>
+      <div class="fs-controls"><span class="fs-icon">A</span>
+        <input type="range" id="font-seekbar" min="13" max="24" step="1" value="16" oninput="onFontSeek(this.value)">
+        <span class="fs-icon big">A</span><span id="fs-value-label">16px</span>
+      </div>
+      <div class="fs-presets">
+        <button class="fs-preset-btn" onclick="setFontSize(13)">Kely</button>
+        <button class="fs-preset-btn active" onclick="setFontSize(16)">Kely kokoa</button>
+        <button class="fs-preset-btn" onclick="setFontSize(19)">Lehibe kokoa</button>
+        <button class="fs-preset-btn" onclick="setFontSize(22)">Lehibe</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="hero"><div id="hero-bg"></div>
+  <div id="hero-content"><h1>AKANJO LAFO VIDY INDRINDRA</h1><div class="date-tag">Alakamisy 4 Jona 2026</div></div>
+</div>
+<div id="content">
+  <div class="section-header"><div class="pill">Fizarana Alakamisy</div><div class="line"></div><h2>AKANJO LAFO VIDY INDRINDRA</h2></div>
+  <p class="body-text">Ny fananana akanjo tsara tarehy matetika no amaritan'izao tontolo izao ny ato aho mpanankarena. Misy olona milaza hoe: "Miakanjo toy izao aho mba hanehoako ny maha izaho ahy." Tsy misy zava-maharitra ankoatra ny fifandraisantsika anefa ny fifandraisantsika amin'Andriamanitra (<span class="v-link" onclick="openPopup('Mat. 6:19-21')">Mat. 6:19-21</span>). Tokony ho voasarona ao amin'i Jesosy sy ny akanjom-pahamarinan'ny tonga lafatra ny maha isika antsika.</p><div class="question-card"><div class="q-text">Vakio ilay fanoharana nanazavan'i Jesosy izany ao amin'ny <span class="v-link" onclick="openPopup('Mat. 22:1-14')">Mat. 22:1-14</span>. Inona avy ireo hafatra hitanao ao anatin'io fanoharana io?</div><div class="verse-note-group"><textarea class="note-solo" placeholder="Fanamarihana..." data-key="note_alakamisy10_q1" oninput="saveNote(this)"></textarea><div class="save-ind" id="ind_alakamisy10_q1">&#x2713; Voatahiry</div></div></div><p class="body-text">Nantsoin'i Jesosy hoe «ry sakaiza» ilay lehilahy tsy nanao ny akanjo tokony hanaovana, ary na voalaza aza fa tsy namaly izy, dia inoana fa tsy namaly izy. Tsy maintsy ho nahafantatra momba ilay akanjo io lehilahy io laigingy nifidy ny tsy hanao izany. Tonga lafatra sy tsy misy tsiny ny atolony antsika izany ka hatafiny antsika ny <em>"rongony fotsy madinika sady madio no mangatsakatsaka"</em> — <span class="v-link" onclick="openPopup('Apôk. 19:8')">Apôk. 19:8</span>, <em>"tsy misy pentimpentina, na fiketronana, na izay toy izany"</em> — <span class="v-link" onclick="openPopup('Efes. 5:27')">Efes. 5:27</span>.</p><p class="body-text">Ny rongony fotsy dia <em>"Fahamarinan'i Kristy (...), toetrany tsy misy pentina izay zaraina amin'ny alalan'ny finoana ho an'izay rehetra mandray Azy ho Mpamonjin'ny tenany manokana."</em> — HF, t. 321, ed. 2004.</p><p class="body-text">Nitafy akanjo fotsy vita amin'ny hazavana malefaka i Adama sy i Eva fony tsy mbola lavo; rehefa nanota kosa izy ireo, dia nahatsiaro ho nitanjaka (<span class="v-link" onclick="openPopup('Gen. 3:7')">Gen. 3:7</span>) ka nanamboatra akanjo tamin'ny ravin'aviavy. Avy eo dia nosoloan'Andriamanitra akanjo hoditra (hodi-biby) izany akanjo natao mba hahazoan'izy mivady akanjo. Nisy sorona nataon'i Jesosy isika iezaka ny hanolo ilay fitafian'ny lanitra tamin'ny fanjairany ravin'aviavy ho fetiny. "Nitanjaka sy menatra izy ireo, ka (...) Tsy misy azon'olona visavisaina hanolo ny akanjon'ny tsy fananan-tsininy izay hiara-mipetraka amin'i Kristy sy ny anjely nomanin'i Kristy sy ny anjely ho azy. Ny fitafiana izay nomanin'i Kristy ihany no hahazoantsika miseho eo anatrehan'Andriamanitra. Io fitafiana io, ny akanjon'ny fahamarinan'ny tenany, no atafin'i Kristy ny fanahy rehetra mibebaka sy mino Azy." — HF, t. 322, ed. 2004.</p><div class="question-card"><div class="q-text">Saintsaino: Tokony hitafy isan'andro ny akanjom-pahamarinan'i Jesosy isika. Inona no tena hevitr'izany, ary ahoana no hanaovantsika izany?</div><div class="verse-note-group"><textarea class="note-solo" placeholder="Fanamarihana..." data-key="note_alakamisy10_q2" oninput="saveNote(this)"></textarea><div class="save-ind" id="ind_alakamisy10_q2">&#x2713; Voatahiry</div></div></div>
+</div>
+<div id="popup-overlay" onclick="closePopupOutside(event)">
+  <div id="popup"><div id="popup-handle"></div>
+    <div id="popup-header"><span>&#128214;</span><h3 id="popup-title">&#8212;</h3><button id="popup-close" onclick="closePopup()">&#x2715;</button></div>
+    <div id="popup-body"></div>
+  </div>
+</div>
+<script>const B={'Isa. 61:10':[{n:'10',t:"Hifaly dia hifaly amin\'i Jehovah aho, ny fanahiko ho ravoravo amin\'Andriamanitro; fa notafiany fitafiana famonjena aho, ary nakanjoiny akanjo fahamarinana, toy ny mpampakatra misatroka hamama tahaka ny mpisorona, ary toy ny ampakarina miravaka ny firvany."}],
+'Isa. 64:5':[{n:'5',t:"Fa samy efa tahaka ny olo-maloto izahay rehetra, ary tahaka ny lamba mihosin-dr ny fahamarinanay rehetra; Malazo tahaka ny ravina izahay rehetra, ary ny helokay mipaoka anay tahaka ny rivotra,"}],
+'Hôs. 6:1-6':[{n:'1',t:"Andeha hiverina ho amin\'i Jehovah isika; Fa Izy no namiravira, ary Izy ihany no hahasitrana antsika; Izy no namely, ary Izy no hamehy ny ferintsika."},{n:'2',t:"Rehefa afaka indroa andro, dia hovelominy indray isika; Ary amin\'ny andro fahatelo, dia hatsangany ho velona eo anatrehany isika"},{n:'3',t:"Dia aoka hahalala, eny, aoka hiezaka hahalala an\'i Jehovah isika; Mahatoky toy ny maraina ny fiposahany, dia ho avy amintsika toy ny ranonorana mivatravatra Izy, sy toy ny fara orana izay mahavonto ny tany. *"},{n:'4',t:"Inona re no ho azoko atao aminao, ry Efraima? Inona re no ho azoko atao aminao, ry Joda? Fa toy ny rahona maraina ny fitiavanareo sy tahaka ny ando izay levona, raha vao maraina ny andro."},{n:'5',t:"Ary noho izany ny mpaminany no nentiko nikapa azy, ny tenin\'ny vavako no nentiko namono azy; Ary ny fitsarana anao dia hiposaka toy ny mazava."},{n:'6',t:"Fa famindram-po no sitrako, fa tsy fanatitra alatsa-dr, ary fahalalana an\'Andriamanitra noho ny fanatitra dorana."}],
+'Hôs. 10:12':[{n:'12',t:"Mamafaza ho anareo araka ny fahamarinana, mijinj araka ny fitiavana, hevoy ny tombam-borakareo*; Fa izao no andro hitadiavana an\'i Jehovah ambara-pihaviny sy handatsahany fahamarinana aminareo**."}],
+'Asa. 3:18,19':[{n:'18',t:"Fa izany no nahatanterahan\'Andriamanitra ny zavatra nampilazainy ny mpaminany rehetra rahateo, fa hiaretan\'ny Kristiny."},{n:'19',t:"Koa mibebaha ianareo, ka miverena hamonoana ny fahotanareo, mba ho avy izay andro famelombelomana avy amin\'ny fanatrehan\'ny Tompo,"}],
+'Asa. 11:18':[{n:'18',t:"Ary rehefa nandre izany ireo, dia nangina sady nankalaza an\'Andriamanitra ka nanao hoe: Efa nomen\'Andriamanitra ny jentilisa koa ny fibebahana hahazoany fiainana."}],
+'Asa. 20:21':[{n:'21',t:"ary nambarako tamin\'ny Jiosy sy ny jentilisa* koa ny fibebahana amin\'Andriamanitra sy ny finoana an\'i Jesosy Kristy Tompontsika."}],
+'Eks. 34:1-10':[{n:'1',t:"[Ny nanavaozan\'Andriamanitra ny fanekena] Ary hoy Jehovah tamin\'i Mosesy: Manamboara ho anao vato fisaka roa tahaka ilay teo, dia hosoratako amin\'ireo vato fisaka ireo ny teny izay tamin\'ilay vato fisaka teo, izay novakivakinao;"},{n:'2',t:"ary aoka hivonona ianao mandra-pahamaraina; dia miakara raha maraina ho ao amin\'ny tendrombohitra Sinay, ka mitsangana eo anatrehako ao an-tampon\'ny tendrombohitra."},{n:'3',t:"Ary aoka tsy hisy olona hiakatra afa-tsy ianao, ary aoka tsy hisy olona ho hita eny amin\'ny tendrombohitra Sinay rehetra; ary ny ondry aman\'osy koa sy ny omby dia aoka tsy hisy handrasana eny akaikin\'izany tendrombohitra izany"},{n:'4',t:"Dia nanamboatra vato fisaka roa tahaka ilay teo Mosesy, ary nifoha maraina koa izy ka niakatra tao amin\'ny tendrombohitra Sinay, araka izay nandidian\'i Jehovah azy; ary nentiny teny an-tnany ny vato fisaka roa."},{n:'5',t:"Ary Jehovah nidina tao anatin\'ny rahona ka nijanona teo aminy, dia nanonona ny anaran\'i Jehovah."},{n:'6',t:"Ary Jehovah nandalo teo anatrehany ka niantso hoe: Jehovah, Jehovah, Andriamanitra mamindra fo sy miantra, mahari-po sady be famindram-po sy fahamarinana,"},{n:'7',t:"mitahiry famindram-po ho an\'ny olona arivo mandimby, mamela heloka sy fahadisoana ary fahotana, kanefa tsy mety manamarina ny meloka, fa mamaly ny heloky ny ray amin\'ny zanaka sy ny zafy hatramin\'ny zafiafy sy ny zafindohalika."},{n:'8',t:"Ary Mosesy dia niondrika faingana tamin\'ny tany ka niankohoka;"},{n:'9',t:"dia hoy izy: Tompo , raha mba mahita fitia eo imasonao aho, aoka Hianao, Tompo , handeha ao afovoanay (fa firenena mafy hatoka izy), ka mamel ny helokay sy ny fahotanay ary raiso ho lovanao izahay."},{n:'10',t:"Ary hoy Izy: Indro, manao fanekena Aho, ka eo anatrehan\'ny olonao rehetra no hanaovako zava-mahagaga, izay tsy mbola nisy natao tany amin\'ny tany rehetra sy tany amin\'ny firenena rehetra; ary ny olona rehetra izay itoeranao dia hahita ny asan\'i Jehovah, fa mahatahotra izay zavatra efa hataoko amin\'ny fiombako anao."}],
+'Eks. 34:6':[{n:'6',t:"Ary Jehovah nandalo teo anatrehany ka niantso hoe: Jehovah, Jehovah, Andriamanitra mamindra fo sy miantra, mahari-po sady be famindram-po sy fahamarinana,"}],
+'Rôm. 2:4':[{n:'4',t:"Sa hamavoinao ny haren\'ny fahamoram-panahiny sy ny fandeferany ary ny fahari-pony, satria tsy fantatrao fa ny fahamoram-panahin\'Andriamanitra dia mitaona anao hibebaka?"}],
+'Rôm. 5:8':[{n:'8',t:"Fa Andriamanitra mampiseho* ny fitiavany antsika, fa fony mbola mpanota isika, dia maty hamonjy antsika Kristy."}],
+'Rôm. 5:20,21':[{n:'20',t:"Ary ny lalna dia niditra koa hahabe ny fahadisoana. Nefa teo amin\'izay nihabiazan\'ny ota no nihoaran\'ny fahasoavana be lavitra,"},{n:'21',t:"mba ho tahaka ny nanjakan\'ny ota tao amin\'ny fahafatesana no hanjakan\'ny fahasoavana kosa amin\'ny fahamarinana ho fiainana mandrakizay amin\'ny alalan\'i Jesosy Kristy Tompontsika."}],
+'Rôm. 6:23':[{n:'23',t:"Fa fahafatesana no tambin\'ny ota; ary fiainana mandrakizay no fanomezam-pahasoavana avy amin\'Andriamanitra ao amin\'i Kristy Jesosy Tompontsika."}],
+'Mat. 3:1,2':[{n:'1',t:"Ary tamin\'izany andro izany dia niseho Jaona Mpanao batisa, nitory tany an-efitr\'i Jodia nanao hoe:"},{n:'2',t:"Mibebaha ianareo; fa efa akaiky ny fanjakan\'ny lanitra."}],
+'Mat. 6:13':[{n:'13',t:"Ary aza mitondra anay ho amin\'ny fakam-panahy, fa manafaha anay amin\'ny* ratsy**."}],
+'Mat. 6:19-21':[{n:'19',t:"Aza mihary harena ho anareo eto an-tany, izay misy kalalao sy harafesina manimba, sady misy mpangalatra manami-trano sy mangalatra."},{n:'20',t:"Fa miharia harena ho anareo any an-danitra, izay tsy misy kalalao na harafesina manimba, sady tsy misy mpangalatra manamitrano na mangalatra."},{n:'21',t:"Fa izay itoeran\'ny harenao, dia ho any koa ny fonao."}],
+'Mat. 22:1-14':[{n:'1',t:"Ary Jesosy namaly, dia nilaza fanoharana taminy indray ka nanao hoe:"},{n:'2',t:"Ny fanjakan\'ny lanitra dia tahaka ny mpanjaka, izay nanao fanasana fampakaram-bady ho an\'ny zananilahy."},{n:'3',t:"Ary izy naniraka ny mpanompony hiantso izay efa nasaina mba hankao amin\'ny fampakaram-bady; fa tsy nety ho avy ireo."},{n:'4',t:"Dia naniraka mpanompo hafa koa indray izy ka nanao hoe: Lazao amin\'ny efa nasaina hoe: Indro, efa voavoatra ny nahandroko; efa voavono ny ombiko sy ny nafahiko, ka efa voavoatra avokoa ny zavatra rehetra; koa mankanesa at? amin\'ny fampakaram-bady ianareo."},{n:'5',t:"Nefa tsy nahoany akory izany, fa samy lasa nandeha izy, ny anankiray ho any amin\'ny sahany, ary ny anankiray ho any amin\'ny varony."},{n:'6',t:"Ary ny sisa nisambotra ny mpanompony, dia nisetrasetra taminy ka namono azy."},{n:'7',t:"Ary dia tezitra ilay mpanjaka ka naniraka ny miaramilany, dia nandringana izany mpamono olona izany sady nandoro ny tannany."},{n:'8',t:"Dia hoy izy tamin\'ny mpanompony: Efa voavoatra ny fampakaram-bady, fa ny efa nasaina no tsy miendrika."},{n:'9',t:"Koa mankanesa ianareo any amin\'ny sampanan-dalana, ary izay hitanareo, dia asao ho ao amin\'ny fampakaram-bady."},{n:'10',t:"Dia nivoaka ho any amin\'ny lalana ireny mpanompo ireny ka namory izay rehetra hitany, na ny ratsy, na ny tsara; ary dia feno mpihinana ny fampakaram-bady."},{n:'11',t:"Ary nony efa niditra ny mpanjaka hizaha ny mpihinana, dia nahita lehilahy anankiray izay tsy niakanjo ny akanjo fitondra amin\'ny fampakaram-bady."},{n:'12',t:"Dia hoy izy taminy: Ry sakaiza, ahoana no idiranao eto, nefa ianao tsy miakanjo ny akanjo fitondra amin\'ny fampakaram-bady? Dia sina izy."},{n:'13',t:"Ary dia hoy ny mpanjaka tamin\'ny mpanompony: Afatory ny tongony aman-tnany, dia ario any amin\'ny maizina any ivelany izy; any no hisy ny fitomaniana sy ny fikitroha-nify."},{n:'14',t:"Fa maro no antsoina, nefa vitsy no fidina."}],
+'Mar. 1:14,15':[{n:'14',t:"Ary rehefa voasambotra Jaona, dia nankany Galilia Jesosy nitory ny filazantsaran\'Andriamanitra"},{n:'15',t:"ka nanao hoe: Efa tonga ny fotoana, ka efa akaiky ny fanjakan\'Andriamanitra; mibebaha ianareo ka minoa ny filazantsara."}],
+'Lio. 10:40-42':[{n:'40',t:"Fa Marta sahirana tamin\'ny fanompoana be; dia avy izy ka nanao hoe: Tompoko, moa tsy mampaninona Anao va ny amelan\'ny rahavaviko ahy hanompo irery? koa mba asaovy manampy ahy izy."},{n:'41',t:"Fa ny Tompo namaly ka nanao taminy hoe: Marta, Marta, maro ahina sy maro herehina ianao;"},{n:'42',t:"nefa zavatra iray loha no ilaina; fa Maria no efa nifidy ny anjara tsara, izay tsy halaina aminy."}],
+'Lio. 11:13':[{n:'13',t:"Koa raha ianareo, na dia ratsy aza, mahalala hanome zava-tsoa ho an\'ny zanakareo, tsy mainka va ny Ray, Izay any an-danitra, no hanome ny Fanahy Masina ho an\'izay mangataka aminy?"}],
+'Lio. 18:13':[{n:'13',t:"Fa ilay mpamory hetra kosa nijanona teny lavitra eny, sady tsy nety niandrandra ny lanitra akory, fa niteha-tratra ka nanao hoe: Andriamanitra , mamindr fo amiko mpanota."}],
+'Lio. 24:46,47':[{n:'46',t:"Ary hoy Izy taminy: Izany no voasoratra, fa Kristy hiaritra ka hitsangana amin\'ny maty amin\'ny andro fahatelo;"},{n:'47',t:"ary mba hotorina amin\'ny anarany ny fibebahana sy ny famelan-keloka amin\'ny firenena rehetra, manomboka eto Jerosalema."}],
+'Jao. 15:2-8':[{n:'2',t:"Ny sampany rehetra eo amiko izay tsy mamoa dia esoriny; fa ny sampany rehetra izay mamoa kosa dia amboariny*, mba hamoa bebe kokoa."},{n:'3',t:"Efa madio rahateo ianareo noho ny teniko, izay nolazaiko taminareo."},{n:'4',t:"Tomoera amiko ary Izaho aminareo. Tahaka ny sampany tsy mahay mamoa ho azy, raha tsy miray amin\'ny voaloboka izy, dia toy izany koa ianareo, raha tsy miray amiko."},{n:'5',t:"Izaho no voaloboka, ianareo no sampany. Izay miray amiko, ary Izaho aminy, dia mamoa be izy; fa raha misaraka amiko kosa ianareo, dia tsy mahay manao na inona na inona."},{n:'6',t:"Raha misy tsy miray amiko, dia ariana eny ivelany tahaka ny sampany izy ka malazo; ary angonina izy ka atsipy ao anaty afo, dia ho may."},{n:'7',t:"Raha miray amiko ianareo, ka mitoetra ao anatinareo ny teniko, dia angataho izay tianareo na inona na inona, fa ho tonga aminareo izany."},{n:'8',t:"Izany no ankalazana ny Raiko, mba hamoazanareo be ka ho tonga mpianatro ianareo."}],
+'Jao. 15:4':[{n:'4',t:"Tomoera amiko ary Izaho aminareo. Tahaka ny sampany tsy mahay mamoa ho azy, raha tsy miray amin\'ny voaloboka izy, dia toy izany koa ianareo, raha tsy miray amiko."}],
+'Jao. 16:8':[{n:'8',t:"Ary raha tonga Izy, dia hampiaiky izao tontolo izao ny fahotana sy ny fahamarinana ary ny fitsarana:"}],
+'1 Jao. 1:9':[{n:'9',t:"Raha miaiky ny fahotantsika isika, dia mahatoky sy marina Izy ka mamela ny fahotantsika sy manadio antsika ho afaka amin\'ny tsi-fahamarinana rehetra."}],
+'Apôk. 3:19':[{n:'19',t:"Izay* rehetra tiako no anariko sy faizako; koa dia mazotoa ianao, ka mibebaha."}],
+'Apôk. 3:20':[{n:'20',t:"Indro, efa mitsangana eo am-baravarana Aho ka mandondna; raha misy mihaino ny feoko ka mamoha ny varavarana, dia hiditra ao aminy Aho ka hiara-misakafo aminy, ary izy amiko."}],
+'Apôk. 7:14':[{n:'14',t:"Fa hoy iraho taminy: Tompoko, ianao no mahalala. Dia hoy iry tamiko: Ireo no avy tamin\'ny fahoriana lehibe, ary ny akanjony nosasany sy nofotsiany tamin\'ny ran\'ny Zanak\'ondry."}],
+'Apôk. 19:8':[{n:'8',t:"Ary nasaina nitafy rongony fotsy madinika sady madio no mangatsakatsaka izy; fa izany rongony fotsy madinika izany dia ny asa marina ataon\'ny olona masina."}],
+'2 Pet. 3:9':[{n:'9',t:"Ny Tompo tsy mahela ny teny fikasany, araka izay ataon\'ny sasany ho fahelany; fa mahari-po aminareo Izy, ka tsy tiany hisy ho very, fa mba ho tonga amin\'ny fibebahana izy rehetra,"}],
+'Sal. 34:18':[{n:'18',t:"Akaikin\'izay manana fo mangorakoraka Jehovah, ary mamonjy izay torororo fanahy."}],
+'Sal. 103:8':[{n:'8',t:"Mamindra fo sy miantra Jehovah, Mahari-po sady be famindram-po."}],
+'Efes. 4:30':[{n:'30',t:"Ary aza mampalahelo ny Fanahy Masin\'Andriamanitra, Izay nanisiana tombo-kase anareo ho amin\'ny andro fanavotana."}],
+'Efes. 5:27':[{n:'27',t:"mba horaisiny* ho an\'ny tenany izany ho fiangonana** malaza tsy misy pentimpentina, na fiketronana, na izay toy izany, fa mba ho masina sady tsy misy tsiny izy."}],
+'Gen. 3:7':[{n:'7',t:"Dia nahiratra ny mason\'izy mivady, ka fantany fa mitanjaka izy; ary nanjaitra ravin\'aviavy izy, ka nataony sikina ho azy."}],
+'Fil. 2:12,13':[{n:'12',t:"Koa amin\'izany, ry malalako, tahaka ny nanekenareo mandrakariva, tsy fony teo aminareo ihany aho, fa ankehitriny dia bebe kokoa aza raha tsy eo aho, mias amin\'ny tahotra ny ny hovitra hahatanteraka ny famonjena anareo."},{n:'13',t:"Fa Andriamanitra no miasa ao anatinareo na ny fikasana na ny fanaovana hahatanteraka ny sitrapony."}],
+'Deo. 4:3,4':[{n:'3',t:"Ny masonareo efa nahita izay nataon\'i Jehovah noho ny tamin\'i Bala-peora; fa ny olona rehetra izay nanaraka an\'i Bala-peora dia naringan\'i Jehovah Andriamanitrao tsy ho eo aminao."},{n:'4',t:"Fa ianareo izay nifikitra tamin\'i Jehovah Andriamanitrareo kosa dia samy velona avokoa izao anio izao."}],
+'Zak. 3:4':[{n:'4',t:"Dia namaly Jehovah ka nilaza tamin\'izay nitsangana teo anoloany hoe: Esory aminy ny fitafiana maloto. Ary hoy koa Izy taminy: Indro, efa nesoriko ny helokao, ary hampiakanjoiko akanjo fihaingoana ianao."}]};
+function openPopup(ref){document.getElementById('popup-title').textContent=ref.toUpperCase();document.getElementById('popup-body').innerHTML='<p style="color:#9aa0b2;font-style:italic;text-align:center;padding:20px 0">Miandry...</p>';document.getElementById('popup-overlay').classList.add('open');setTimeout(()=>{const k=Object.keys(B).find(k=>k.toLowerCase()===ref.toLowerCase());const vs=k?B[k]:null;const b=document.getElementById('popup-body');if(vs&&vs.length){b.innerHTML='<p style="font-size:18px;font-weight:700;color:#c9a84c;margin-bottom:16px">'+ref.replace(/:\d.*/,'').trim().toUpperCase()+'</p>'+vs.map(v=>'<p><span class="vn">['+v.n+']</span>'+v.t+'</p>').join('');}else{b.innerHTML='<p style="color:#9aa0b2;font-style:italic">Tsy hita: <strong>'+ref+'</strong></p>';}},180);}
+function closePopup(){document.getElementById('popup-overlay').classList.remove('open');}
+function closePopupOutside(e){if(e.target===document.getElementById('popup-overlay'))closePopup();}
+let db;function openDB(){return new Promise((r,j)=>{const q=indexedDB.open('BaibolyStudyDB',1);q.onupgradeneeded=e=>e.target.result.createObjectStore('notes',{keyPath:'key'});q.onsuccess=e=>r(e.target.result);q.onerror=e=>j(e);});}
+async function initDB(){db=await openDB();document.querySelectorAll('[data-key]').forEach(async ta=>{const tx=db.transaction('notes','readonly');const q=tx.objectStore('notes').get(ta.dataset.key);q.onsuccess=e=>{if(e.target.result)ta.value=e.target.result.value;};});}
+let st={};function saveNote(ta){const k=ta.dataset.key;clearTimeout(st[k]);st[k]=setTimeout(async()=>{if(!db)db=await openDB();const tx=db.transaction('notes','readwrite');tx.objectStore('notes').put({key:k,value:ta.value});const id='ind_'+k.replace('note_','');const el=document.getElementById(id);if(el){el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800);}},600);}
+const FS_KEY='baiboly_font_size';
+function applyFontSize(s){document.querySelectorAll('.body-text,.quote-block,.q-text,.info-block p,.fs-preview,.numbered-q .q-text').forEach(el=>el.style.fontSize=s+'px');const sb=document.getElementById('font-seekbar');if(sb)sb.value=s;const lb=document.getElementById('fs-value-label');if(lb)lb.textContent=s+'px';const pv=document.getElementById('fs-preview');if(pv)pv.style.fontSize=s+'px';document.querySelectorAll('.fs-preset-btn').forEach(b=>b.classList.toggle('active',parseInt(b.getAttribute('onclick').match(/\d+/)[0])===s));}
+function onFontSeek(v){applyFontSize(parseInt(v));localStorage.setItem(FS_KEY,v);}
+function setFontSize(s){applyFontSize(s);localStorage.setItem(FS_KEY,s);}
+function openFontSheet(){document.getElementById('fontsize-overlay').classList.add('open');}
+function closeFontSheet(){document.getElementById('fontsize-overlay').classList.remove('open');}
+function closeFontOutside(e){if(e.target===document.getElementById('fontsize-overlay'))closeFontSheet();}
+new IntersectionObserver(entries=>{document.getElementById('toolbar').classList.toggle('visible',!entries[0].isIntersecting);},{threshold:0.1}).observe(document.getElementById('hero'));
+applyFontSize(parseInt(localStorage.getItem(FS_KEY))||16);initDB();</script>
+</body>
+</html>
