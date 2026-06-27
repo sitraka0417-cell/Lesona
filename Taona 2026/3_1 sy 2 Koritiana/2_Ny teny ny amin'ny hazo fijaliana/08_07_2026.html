@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MESIA VOAHOMBO</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:#111318;color:#e8e8e8}
+#toolbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(17,19,24,.96);display:flex;align-items:center;padding:0 16px;z-index:100;border-bottom:1px solid #2e3347;transform:translateY(-100%);transition:transform .35s}
+#toolbar.visible{transform:translateY(0)}
+#toolbar .tb-title{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e8e8e8;flex:1}
+#font-btn{position:fixed;top:12px;right:16px;z-index:200;background:rgba(34,39,54,.92);border:1px solid #2e3347;border-radius:8px;color:#e8e8e8;cursor:pointer;padding:6px 12px;font-size:14px;font-weight:600}
+#fontsize-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;align-items:flex-end}
+#fontsize-overlay.open{display:flex}
+#fontsize-sheet{background:#1a1e27;border-radius:20px 20px 0 0;width:100%;padding:0 0 32px;transform:translateY(100%);transition:transform .35s;border-top:1px solid #2e3347}
+#fontsize-overlay.open #fontsize-sheet{transform:translateY(0)}
+#fontsize-handle{width:40px;height:4px;background:#2e3347;border-radius:2px;margin:10px auto 0}
+#fontsize-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid #2e3347}
+#fontsize-header h3{font-size:17px;color:#c9a84c}
+#fontsize-close{background:#222736;border:none;color:#e8e8e8;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer}
+#fontsize-body{padding:24px}
+.fs-preview{background:#222736;border:1px solid #2e3347;border-radius:12px;padding:14px 16px;margin-bottom:24px;line-height:1.7;color:#e8e8e8}
+.fs-controls{display:flex;align-items:center;gap:14px}
+.fs-icon{font-size:13px;color:#9aa0b2;font-weight:600}
+.fs-icon.big{font-size:20px}
+#font-seekbar{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:#2e3347;outline:none;cursor:pointer}
+#font-seekbar::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#4e7bdb;border:3px solid #fff;cursor:pointer}
+#fs-value-label{font-size:13px;color:#7aa3f5;font-weight:600;min-width:36px;text-align:right}
+.fs-presets{display:flex;gap:8px;margin-top:20px;justify-content:center;flex-wrap:wrap}
+.fs-preset-btn{background:#222736;border:1px solid #2e3347;border-radius:8px;color:#9aa0b2;font-family:Georgia,serif;font-size:13px;padding:6px 14px;cursor:pointer}
+.fs-preset-btn.active{background:#4e7bdb;border-color:#4e7bdb;color:#fff}
+#hero{position:relative;height:260px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 24px 32px;text-align:center}
+#hero-bg{position:absolute;inset:0;background-image:url('file:///android_asset/header.jpg');background-size:cover;background-position:center;filter:brightness(.45)}
+#hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,#111318 100%)}
+#hero-content{position:relative;z-index:1}
+#hero h1{font-size:22px;font-weight:700;letter-spacing:1px;line-height:1.25;text-shadow:0 2px 12px rgba(0,0,0,.8);margin-bottom:8px}
+#hero .date-tag{font-size:13px;color:rgba(255,255,255,.7)}
+#content{max-width:680px;margin:0 auto;padding:24px 20px 80px}
+.info-block{background:#1a1e27;border:1px solid #2e3347;border-radius:12px;padding:16px 18px;margin-bottom:16px;border-left:3px solid #c9a84c}
+.info-block .label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c9a84c;margin-bottom:8px;font-weight:600}
+.info-block p{font-size:14px;line-height:1.65;color:#9aa0b2;text-align:justify}
+.section-header{margin:28px 0 18px;display:flex;align-items:center;gap:12px}
+.section-header .pill{background:#222736;border:1px solid #2e3347;border-radius:20px;padding:4px 14px;font-size:11px;letter-spacing:1px;color:#9aa0b2;text-transform:uppercase;white-space:nowrap}
+.section-header .line{flex:1;height:1px;background:#2e3347}
+.section-header h2{font-size:16px;color:#c9a84c;white-space:nowrap}
+.grand-titre{font-size:22px;font-weight:700;color:#c9a84c;text-align:center;margin:28px 0 16px;letter-spacing:.5px}
+.sous-titre{font-size:16px;font-weight:600;color:#7aa3f5;margin:20px 0 12px;padding-left:4px;border-left:3px solid #4e7bdb}
+.body-text{font-size:16px;line-height:1.8;color:#e8e8e8;margin-bottom:16px;text-align:justify}
+.v-link{color:#7aa3f5;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;white-space:nowrap}
+.quote-block{background:#1a1e27;border-left:3px solid #4e7bdb;border-radius:0 12px 12px 0;padding:16px 18px;margin:20px 0;font-style:italic;font-size:15px;line-height:1.7;color:#9aa0b2;text-align:justify}
+.quote-block cite{display:block;margin-top:8px;font-size:12px;color:#9aa0b2;font-style:normal}
+.question-card{background:#1a1e27;border:1px solid #2e3347;border-radius:16px;padding:20px;margin:20px 0}
+.question-card .q-text{font-size:17px;font-weight:600;line-height:1.6;margin-bottom:16px;color:#e8e8e8;text-align:justify}
+.verse-note-group{background:#222736;border:1px solid #2e3347;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.note-solo{width:100%;min-height:80px;background:rgba(0,0,0,.25);border:1px solid #2e3347;border-radius:8px;color:#e8e8e8;font-family:Georgia,serif;font-size:14px;padding:10px 12px;resize:vertical;outline:none;line-height:1.6}
+.note-solo::placeholder{color:#555}
+.note-solo:focus{border-color:#4e7bdb}
+.save-ind{font-size:11px;color:#7aa3f5;margin-top:4px;opacity:0;transition:opacity .4s;text-align:right}
+.save-ind.show{opacity:1}
+.bullet-list{padding-left:0;margin:12px 0 16px;list-style:none}
+.bullet-list li{padding:8px 0 8px 20px;border-bottom:1px solid #2e3347;color:#e8e8e8;font-size:16px;line-height:1.7;position:relative;text-align:justify}
+.bullet-list li:before{content:'\2022';color:#c9a84c;position:absolute;left:0;font-size:18px}
+#popup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:flex-end}
+#popup-overlay.open{display:flex}
+#popup{background:#1a1e27;border-radius:20px 20px 0 0;width:100%;max-height:75vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .35s}
+#popup-overlay.open #popup{transform:translateY(0)}
+#popup-handle{width:40px;height:4px;background:#2e3347;border-radius:2px;margin:10px auto 0;flex-shrink:0}
+#popup-header{display:flex;align-items:center;padding:14px 20px 12px;gap:10px;border-bottom:1px solid #2e3347;flex-shrink:0}
+#popup-header h3{font-size:17px;flex:1;color:#e8e8e8}
+#popup-close{background:#222736;border:none;color:#e8e8e8;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer}
+#popup-body{overflow-y:auto;padding:20px;flex:1;font-size:15px;line-height:1.9;color:#e8e8e8;text-align:justify}
+#popup-body .vn{font-weight:700;color:#7aa3f5;margin-right:6px}
+#popup-body p{margin-bottom:12px}</style>
+</head>
+<body>
+<div id="toolbar"><span class="tb-title">MESIA VOAHOMBO</span></div>
+<button id="font-btn" onclick="openFontSheet()">A&#8314;</button>
+<div id="fontsize-overlay" onclick="closeFontOutside(event)">
+  <div id="fontsize-sheet">
+    <div id="fontsize-handle"></div>
+    <div id="fontsize-header"><h3>Haben'ny soratra</h3><button id="fontsize-close" onclick="closeFontSheet()">&#x2715;</button></div>
+    <div id="fontsize-body">
+      <div class="fs-preview" id="fs-preview">Ny teninao dia nataoko tao am-poko.</div>
+      <div class="fs-controls"><span class="fs-icon">A</span><input type="range" id="font-seekbar" min="13" max="24" step="1" value="16" oninput="onFontSeek(this.value)"><span class="fs-icon big">A</span><span id="fs-value-label">16px</span></div>
+      <div class="fs-presets">
+        <button class="fs-preset-btn" onclick="setFontSize(13)">Kely</button>
+        <button class="fs-preset-btn active" onclick="setFontSize(16)">Kely kokoa</button>
+        <button class="fs-preset-btn" onclick="setFontSize(19)">Lehibe kokoa</button>
+        <button class="fs-preset-btn" onclick="setFontSize(22)">Lehibe</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="hero"><div id="hero-bg"></div>
+  <div id="hero-content"><h1>MESIA VOAHOMBO</h1><div class="date-tag">Alarobia 08 Jolay 2026</div></div>
+</div>
+<div id="content">
+<div class="section-header"><div class="pill">Fizarana Alarobia</div><div class="line"></div><h2>LESONA 2</h2></div>
+<div class="info-block"><div class="label">Velomin'ny teniny:</div><p><span class="v-link" onclick="openPopup('Job. 12')">Job. 12</span></p></div>
+<p class="body-text">Hoy i Paoly: &quot;fa ny Jiosy mila famantarana, ary ny jentilisa mitady fahendrena.&quot;- <span class="v-link" onclick="openPopup('1 Kor. 1:22')">1 Kor. 1:22</span>. Tsy ny hazo fijaliana (ny fanomboana an'Andriamanitra, ilay Mesia, tamin'ny hazo fijaliana) no famantarana nandrasan'ireo Jiosy. Tsy izany koa ny karazam-pahendrena nirin'ireo Grika. Nifanohitra tamin'izay nandrasan'ny rehetra izany.</p>
+<p class="body-text">Raha ny marina, ny fijerena ny fihetsiky ny mpianatra raha nandre momba ny fanomboana an'i Jesosy amin'ny hazo fijaliana (jereo ny <span class="v-link" onclick="openPopup('Mar. 8:31,32')">Mar. 8:31,32</span> ;<span class="v-link" onclick="openPopup('Mar. 9:30-32')">Mar. 9:30-32</span> ary ny <span class="v-link" onclick="openPopup('Mar.10:32-34')">Mar.10:32-34</span>) dia ampy hahitana fa hafahafa no sady maharikoriko ho an'ny firenena iray manontolo izany, indrindra ho an'ny Jiosy. Efa voalazantsika tany aloha fa niandrandra ny Mesia handresy ny Romanina ireo Jiosy; tsy izany anefa no nitranga, tsy dia araka izay hevitry ny hoe &quot;mandresy&quot; araka ny fandraisan'izao tontolo izao azy izany.</p>
+<p class="body-text">Nandritra ny taonjato maro,ndia marika maneho ny finoana ny hazo fijaliana, ho an'ny Kristianina. Sarotra ho an'ny Kristianina amin'izao taonjato faha-21 izao ny mahatakatra fa fahadalana tokoa no nandraisan'ireo olona tamin'ny taonjato voalohany ny fiheverana fa Andriamanitra no hohomboana amin'ny hazo fijaliana.</p>
+<p class="body-text">Kanefa noho ny maha-hafatra manaitra izany indrindra (tamin'izany andro izany) no tokony hisaintsainantsika lalina momba azy. Ny sarin'ny Mesia iray voahombo amin'ny hazo fijaliana no maneho mazava amin'izao rehetra izao ny haben'ny fahavononan'Andriamanitra hanatanteraka ny drafi-panavotana. Raha isika izay mpanota eto an-tany aza talanjona manoloana ny hazo fijaliana - ny fieritreretana fa maty teo amin'ny hazo fijaliana ny Tompo - alao sary an-tsaina ny amin'ireo voary tsy nanota izay nahalala an'i Jesosy sy niankohoka Taminy tany an-danitra!</p>
+<div class="question-card"><div class="q-text">Vakio ny <span class="v-link" onclick="openPopup('Asa. 13:16-47')">Asa. 13:16-47</span> (indrindra ny andininy 26, 38 ary 47). Inona no
+ampianarin'ireo andalan-teny Ireo antsika momba ny hevitry ny hazo fijaliana?</div><div class="verse-note-group"><textarea class="note-solo" placeholder="Fanamarihana..." data-key="note_mesia_voahombo_q1" oninput="saveNote(this)"></textarea><div class="save-ind" id="ind_mesia_voahombo_q1">&#x2713; Voatahiry</div></div></div>
+<p class="body-text">Ambaran'i Paoly fa i Kristy no naniraka azy hitory ny filazantsara koa dia nitory ny hafatra momba ny Mesia nohomboana tamin'ny hazo fijaliana izy (<span class="v-link" onclick="openPopup('1 Kôr. 1:23')">1 Kôr. 1:23</span>).
+Nahatoky tamin'ny iraka nampanaovin'i Kristy azy ity apostoly ity. Raha nitory ny
+filazantsara izy, dia tsy nanao &quot;teny sy fahendrena marevaka'- <span class="v-link" onclick="openPopup('1 Kôr. 2:1')">1 Kôr. 2:1</span>, fa nifantoka tamin'i Jesosy Kristy irery ihany, &quot;indrindra fa lzy voahombo tamin'ny hazo fijaliana.'- <span class="v-link" onclick="openPopup('1 Kor. 2:2')">1 Kor. 2:2</span>. Ny teniny sy ny hafatra nentiny dia &quot;tsy tamin'ny teny fahendrena mahataona, fa tamin'ny fanehoan'ny Fanahy sy ny hery - <span class="v-link" onclick="openPopup('1 Kôr. 2:4')">1 Kôr. 2:4</span> , satria ny &quot;fahendren'ny olona dia mifanohitra miharihary amin'ny &quot;herin'Andriamanitra.- <span class="v-link" onclick="openPopup('2 Kor.2:5')">2 Kor.2:5</span>.</p>
+<p class="body-text">Zavatra tsy nandrasan'ny Jiosy na ny Grika mihitsy ny hanomboana ny Mesia.
+Inona no ambaran'izany momba ny fomba fiasan'Andriamanitra izay tsy araka ny andrasantsika mandrakariva? 
+Nahoana no zava-dehlbe ny hahatakarantsika izany hevitra izany, Indrindra rehefa tsy araka izay nandrandraintsika my toe-java-miseho?</p>
+
+</div>
+<div id="popup-overlay" onclick="closePopupOutside(event)">
+  <div id="popup"><div id="popup-handle"></div>
+    <div id="popup-header"><span>&#128214;</span><h3 id="popup-title">&#8212;</h3><button id="popup-close" onclick="closePopup()">&#x2715;</button></div>
+    <div id="popup-body"></div>
+  </div>
+</div>
+<script>const B={"2 Kor.2:5":[{n:"",t:"[5] Fa raha nisy efa nampalahelo, dia tsy nampalahelo ahy ihany izy (nefa tsy ta-hanao teny mafy loatra aho), fa mba nampalahelo anareo rehetra koa."}],
+"1 Kôr. 2:4":[{n:"",t:"[4] ary ny teniko sy ny toriteniko dia tsy tamin'ny teny fahendrena mahataona, fa tamin'ny fanehoan'ny Fanahy sy ny hery,"}],
+"1 Kor. 2:2":[{n:"",t:"[2] Fa ninia tsy hahafantatra zavatra hafa teo aminareo aho, afa-tsy Jesosy Kristy, indrindra fa Izy voahombo tamin'ny hazo fijaliana;"}],
+"1 Kôr. 2:1":[{n:"",t:"[1] Ary izaho koa, ry rahalahy, raha tonga tany aminareo, dia tsy tonga tamin'ny teny sy fahendrena marevaka, raha nitory taminareo ny zava-miafina izay an'Andriamanitra."}],
+"1 Kôr. 1:23":[{n:"",t:"[23] fa izahay kosa mitory an'i Kristy voahombo tamin'ny hazo fijaliana, dia fahatafintohinana amin'ny Jiosy ary fahadalana amin'ny jentilisa,"}],
+"Asa. 13:16-47":[{n:"",t:"[16] Ary Paoly nitsangana, dia nanofa tanana azy ka nanao hoe: Ry lehilahy Isiraely sy ianareo izay matahotra an'Andriamanitra, mihainoa;"},{n:"",t:"[17] Andriamanitr'izao olona Isiraely izao efa nifidy ny razantsika ka nanandratra ny olona, raha nivahiny tany amin'ny tany Egypta izy, ary sandry avo no nitondrany azy nivoaka avy tany."},{n:"",t:"[18] Ary Izy nandefitra tamin'ny nataony tany an-efitra tokony ho efa-polo taona."},{n:"",t:"[19] Ary rehefa nandrava firenena fito tany amin'ny tany Kanana Izy, dia nampandovainy ny tanin'ireny izy"},{n:"",t:"[20] tokony ho dimam-polo amby efa-jato taona; ary rehefa afaka izany, dia nomeny mpitsara izy hatramin'i Samoela mpaminany."},{n:"",t:"[21] Ary rehefa afaka indray izany, dia nangataka mpanjaka izy; ka dia nomen'Andriamanitra azy efa-polo taona Saoly, zanak'i Kisy, lehilahy avy tamin'ny firenen'i Benjamina."},{n:"",t:"[22] Ary rehefa nanaisotra an'i Saoly Izy, dia nanandratra an'i Davida ho mpanjakany sady nanambara azy hoe: Izaho nahita an'i Davida, zanak'i Jese, lehilahy araka ny foko, izay hanao ny sitrapoko rehetra (1 Sam. 13. 14; Sal. 89. 20)."},{n:"",t:"[23] Avy tamin'ny taranak'izany lehilahy izany no nitondran'Andriamanitra an'i Jesosy araka ny teny fikasana ho Mpamonjy ny Isiraely,"},{n:"",t:"[24] rehefa notorin'i Jaona tamin'ny olona Isiraely rehetra aloha ny batisan'ny fibebahana, fony tsy mbola tonga Izy."},{n:"",t:"[25] Ary Jaona, rehefa nadiva no nahatanteraka ny nalehany, dia nanao hoe: Ataonareo ho iza moa aho? Tsy Izy aho; fa, indro, misy Anankiray avy ao aoriako, ka izaho tsy miendrika hamaha ny kapa eo an-tongony akory."},{n:"",t:"[26] Ry rahalahy, taranak'i Abrahama, sy izay rehetra eo aminareo matahotra an'Andriamanitra, dia ho amintsika no nampitondrana ny tenin'izao famonjena izao."},{n:"",t:"[27] Fa izay monina any Jerosalema sy ny loholony, satria tsy mba nahafantatra Azy, na ny feon'ny mpaminany izay vakina isan-tSabata, dia nahatanteraka izany tamin'ny nanamelohany Azy."},{n:"",t:"[28] Ary na dia tsy hitany aza izay tokony hanamelohana Azy ho faty, dia nangataka tamin'i Pilato ihany izy hamonoana Ary."},{n:"",t:"[29] Ary rehefa nahatanteraka izay rehetra voasoratra ny amin'i Jesosy izy, dia nanaisotra Azy tamin'ny hazo ka nandevina Azy tao am-pasana."},{n:"",t:"[30] Fa Andriamanitra kosa nanangana Azy tamin'ny maty."},{n:"",t:"[31] Ary Izy niseho andro maro tamin'izay niara-niakatra taminy avy tany Galilia ho any Jerosalema, ka dia ireo no vavolombelony amin'ny olona ankehitriny."},{n:"",t:"[32] Ary izahay mitory ny filazantsara aminareo, dia ilay teny fikasana nolazaina tamin'ny razana,"},{n:"",t:"[33] dia ny nahatanterahan'Andriamanitra izany tamin'ny zanatsika, raha nanangana an'i Jesosy Izy, araka ny voasoratra eo amin'ny Salamo faharoa hoe: Zanako Hianao, Izaho niteraka Anao androany (Sal. 2. 7)."},{n:"",t:"[34] Ary ny amin'ny nananganany Azy tamin'ny maty, ka tsy hiverina ho amin'ny lò intsony Izy, dia izao no voalazany: Homeko anareo ny famindram-po mahatoky nampanantenaina an'i Davida (Isa. 55. 3)."},{n:"",t:"[35] Fa hoy Izy ao amin'ny Salamo hafa koa: Tsy hamela ny Iray Masinao ho tratry ny lò Hianao (Sal. 16. 10)."},{n:"",t:"[36] Fa Davida, rehefa nahatanteraka ny sitrapon'Andriamanitra hahasoa ny olona niara-belona taminy, dia nodi-mandry ka nangonina ho any amin'ny razany izy ary tratry ny lò;"},{n:"",t:"[37] fa Izay natsangan'Andriamanitra no tsy mba tratry ny lò."},{n:"",t:"[38] Ary aoka ho fantatrareo, ry rahalahy, fa izany Lehilahy izany no itoriana famelan-keloka aminareo;"},{n:"",t:"[39] ary ao aminy no anamarinana izay rehetra mino ho afaka amin'ny heloka rehetra izay tsy azo nanamarinana anareo tamin'ny lalàn'i Mosesy."},{n:"",t:"[40] Koa tandremo fandrao hihatra izay voalaza eo amin'ny mpaminany hoe:"},{n:"",t:"[41] Izahaonareo mpamotsifotsy, dia gagà, ka levona; Fa Izaho manao asa amin'ny andronareo, Dia asa izay tsy hinoanareo akory, na dia hisy hilaza aminareo aza (Hab. 1. 5)"},{n:"",t:"[42] Ary rehefa nivoaka izy, dia nangatahiny holazaina aminy indray izany teny izany amin'ny Sabata manaraka."},{n:"",t:"[43] Ary rehefa nirava ny fiangonana, dia maro tamin'ny Jiosy sy ny proselyta izay nanompo an'Andriamanitra no nanaraka an'i Paoly sy Barnabasy, izay niteny taminy ka namporisika azy haharitra amin'ny fahasoavan'Andriamanitra."},{n:"",t:"[44] Ary nony tamin'ny Sabata manaraka, dia saiky tafangona avokoa ny tao an-tanàna hihaino ny tenin'Andriamanitra."},{n:"",t:"[45] Nefa ny Jiosy kosa, raha nahita ny vahoaka betsaka, dia feno fialonana ka nanohitra ny teny nolazain'i Paoly, sady niteny ratsy."},{n:"",t:"[46] Ary Paoly sy Barnabasy dia niteny tamin'ny fahasahiana ka nanao hoe: Hianareo no tsy maintsy nitoriana ny tenin'Andriamanitra aloha; fa rehefa mandà izany ianareo ka manao ny tenanareo ho tsy miendrika hahazo fiainana mandrakizay, dia indro, mitodika mankany amin'ny jentilisa izahay;"},{n:"",t:"[47] fa izao no nandidian'ny Tompo anay: Efa nanendry Anao ho fahazavan'ny jentilisa Aho, Mba ho famonjena hatrany amin'ny faran'ny tany Hianao (Isa. 49. 6)."}],
+"Mar.10:32-34":[{n:"",t:"[32]  Ary Jesosy sy ny mpianany dia teny an-dalana niakatra ho any Jerosalema, ary Jesosy nandeha eo alohany; dia gaga ny mpianany, ary izay nanaraka Azy dia natahotra. Ary naka ny roa ambin'ny folo lahy indray Izy, dia nilaza taminy izay efa hanjo Azy"},{n:"",t:"[33] ka nanao hoe: Indro, miakatra ho any Jerosalema isika; ary ny Zanak'olona hatolotra ho amin'ireo lohan'ny mpisorona sy mpanora-dalàna; ary hohelohiny ho faty Izy ka hatolony amin'ny jentilisa;"},{n:"",t:"[34] ary hanao Azy ho fihomehezana ireny sy handrora Azy sy hikapoka Azy ary hahafaty Azy; fa rehefa afaka hateloana, dia hitsangana indray Izy."}],
+"Mar. 9:30-32":[{n:"",t:"[30]  Dia niala teo izy ka nizotra namaky an'i Galilia, ary tsy tian'i Jesosy ho fantatry ny olona izany."},{n:"",t:"[31] Fa nampianatra ny mpianany Izy ka nanao taminy hoe: Ny Zanak'olona dia hatolotra eo an-tànan'ny olona ka hovonoiny; ary rehefa voavono Izy, dia hitsangana rehefa afaka hateloana."},{n:"",t:"[32] Fa izy ireo tsy nahafantatra izany teny izany sady natahotra hanontany Azy."}],
+"Mar. 8:31,32":[{n:"",t:"[31] Dia nampianatra azy Izy fa ny Zanak'olona tsy maintsy hijaly mafy ka holavin'ny loholona sy ny lohan'ny mpisorona ary ny mpanora-dalàna, dia hovonoiny, ary rehefa afaka hateloana, dia hitsangana indray Izy."},{n:"",t:"[32] Ary naharihariny tsara no filaza izany teny izany. Ary Petera nanohina Azy hitanila kely, dia niteny mafy Azy."}],
+"1 Kor. 1:22":[{n:"",t:"[22] fa ny Jiosy mila famantarana, ary ny jentilisa mitady fahendrena,"}],
+"Job. 12":[{n:"",t:"[Ny teny navalin'i Joba]"},{n:"",t:"[1]  Dia namaly Joba ka nanao hoe:"},{n:"",t:"[2] Marina ary fa ianareo ihany tokoa olombelona! Ary hiara-maty aminareo ny fahendrena!"},{n:"",t:"[3] Kanefa izaho mba manan-tsaina tahaka anareo ihany koa; Tsy latsaka noho ianareo aho; Fa iza moa no tsy nahalala izay zavatra toy izany?"},{n:"",t:"[4] Tonga fihomehezan'ny sakaizako aho. Dia izaho izay niantso an'Andriamanitra ka novaliany; Eny, tonga fihomehezana ny olona marina tsy manan-tsiny."},{n:"",t:"[5] Endrehin-datsa ny ozoim-pahoriana, raha araka ny hevitry ny miadana, eny, vonona ho amin'izay ela mangozohozo ny latsa."},{n:"",t:"[6] Mandry fahizay ny lain'ny mpitohatoha, Ary mitoetra tsy manahy izay sahy mampahatezitra an'Andriamanitra, dia izay mitondra ny herin'ny tànany ho andriamaniny"},{n:"",t:"[7] Kanefa anontanio ange ny biby, fa hampianatra anao izy, ary ny voro-manidina, fa hanambara aminao izy;"},{n:"",t:"[8] Ary makà saina amin'ny tany, dia hampianatra anao izy. Ary ny hazandrano any an-dranomasina hampahalala anao."},{n:"",t:"[9] Iza no tsy mahalala, raha mandinika ireny rehetra ireny, fa ny nanao izany dia ny tanan'i Jehovah,"},{n:"",t:"[10] Izay mitana ny ain'ny zava-manan'aina rehetra sy ny fofonain'ny olombelona rehetra?"},{n:"",t:"[11] Moa tsy ny sofina va no mamantatra ny teny? Ary tsy ny vava va no manandrana ny hanina?"},{n:"",t:"[12] Ao amin'ny fotsy volo ny fahendrena, ary ny fahela-velona no ahazoam-pahalalana."},{n:"",t:"[13] Ao amin'Andriamanitra kosa no misy fahendrena sy hery; Izy no manana hevitra sy fahalalana."},{n:"",t:"[14] Indro, mandrava Izy, ka tsy hatsangana intsony; Manidy ny olona Izy, ka tsy hovohana."},{n:"",t:"[15] Indro, manampina ny rano Izy, ka dia ritra iny; Ary alefany indray ka mahasimba ny tany."},{n:"",t:"[16] Izy no manana hery sy tena fahendrena; Samy eo an-tanany avokoa ny voafitaka sy ny mpamitaka."},{n:"",t:"[17] Alany voninahitra ny mpanolo-tsaina, dia entiny. Ary asehony ny fahadalan'ny mpitsara."},{n:"",t:"[18] Vahany ny fifehezan'ny mpanjaka, ka feheziny mahazaka ny valahany."},{n:"",t:"[19] Alàny voninahitra ny mpisorona, dia entiny, ary ny mafy orina ela dia ravany."},{n:"",t:"[20] Koroiny ny laha-tenin'ny mahay, ary ny fahazavan-tsain'ny anti-panahy dia esoriny."},{n:"",t:"[21] Mandatsaka fanamavoana amin'ny andriandahy Izy, ary ketrahiny ny fehin-kibon'ny matanjaka."},{n:"",t:"[22] Manala rakotra izay lalina Izy mba tsy ho maizina ary mitondra ny aloky ny fahafatesana ho eo amin'ny mazava."},{n:"",t:"[23] Mahalehibe ny firenena Izy, nefa mandringana azy koa, mampihahaka ny firenena Izy, nefa mitondra azy hody indray."},{n:"",t:"[24] Mahavery saina ny loholona amin'ny tany Izy ary mampirenireny azy any an-efitra tsy misy lalana;"},{n:"",t:"[25] Mitsapatsapa amin'ny maizina tsy misy mavaza ireo; ary mampivembena azy tahaka ny olona mamo Izy."}]};
+function openPopup(ref){document.body.style.overflow='hidden';document.getElementById('popup-title').textContent=ref.toUpperCase();document.getElementById('popup-body').innerHTML='<p style="color:#9aa0b2;font-style:italic;text-align:center;padding:20px 0">Miandry...</p>';document.getElementById('popup-overlay').classList.add('open');setTimeout(()=>{const k=Object.keys(B).find(k=>k.toLowerCase()===ref.toLowerCase());const vs=k?B[k]:null;const b=document.getElementById('popup-body');if(vs&&vs.length){b.innerHTML='<p style="font-size:18px;font-weight:700;color:#c9a84c;margin-bottom:16px">'+ref.replace(/:[\d].*/,'').trim().toUpperCase()+'</p>'+vs.map(v=>'<p>'+(v.n?'<span class=\"vn\">['+v.n+']</span>':'')+v.t+'</p>').join('');}else{b.innerHTML='<p style="color:#9aa0b2;font-style:italic">Tsy hita: <strong>'+ref+'</strong></p>';}},180);}
+function closePopup(){document.body.style.overflow='';document.getElementById('popup-overlay').classList.remove('open');}
+function closePopupOutside(e){if(e.target===document.getElementById('popup-overlay'))closePopup();}
+let db;function openDB(){return new Promise((r,j)=>{const q=indexedDB.open('BaibolyStudyDB',1);q.onupgradeneeded=e=>e.target.result.createObjectStore('notes',{keyPath:'key'});q.onsuccess=e=>r(e.target.result);q.onerror=e=>j(e);});}
+async function initDB(){db=await openDB();document.querySelectorAll('[data-key]').forEach(async ta=>{const tx=db.transaction('notes','readonly');const q=tx.objectStore('notes').get(ta.dataset.key);q.onsuccess=e=>{if(e.target.result)ta.value=e.target.result.value;};});}
+let st={};function saveNote(ta){const k=ta.dataset.key;clearTimeout(st[k]);st[k]=setTimeout(async()=>{if(!db)db=await openDB();const tx=db.transaction('notes','readwrite');tx.objectStore('notes').put({key:k,value:ta.value});const id='ind_'+k.replace('note_','');const el=document.getElementById(id);if(el){el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800);}},600);}
+const FS_KEY='baiboly_font_size';
+function applyFontSize(s){document.querySelectorAll('.body-text,.quote-block,.q-text,.info-block p,.fs-preview').forEach(el=>el.style.fontSize=s+'px');const sb=document.getElementById('font-seekbar');if(sb)sb.value=s;const lb=document.getElementById('fs-value-label');if(lb)lb.textContent=s+'px';document.querySelectorAll('.fs-preset-btn').forEach(b=>b.classList.toggle('active',parseInt(b.getAttribute('onclick').match(/\d+/)[0])===s));}
+function onFontSeek(v){applyFontSize(parseInt(v));localStorage.setItem(FS_KEY,v);}
+function setFontSize(s){applyFontSize(s);localStorage.setItem(FS_KEY,s);}
+function openFontSheet(){document.getElementById('fontsize-overlay').classList.add('open');}
+function closeFontSheet(){document.getElementById('fontsize-overlay').classList.remove('open');}
+function closeFontOutside(e){if(e.target===document.getElementById('fontsize-overlay'))closeFontSheet();}
+new IntersectionObserver(entries=>{document.getElementById('toolbar').classList.toggle('visible',!entries[0].isIntersecting);},{threshold:0.1}).observe(document.getElementById('hero'));
+applyFontSize(parseInt(localStorage.getItem(FS_KEY))||16);initDB();
+</script>
+</body>
+</html>

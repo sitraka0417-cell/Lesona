@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zoma - FIANARANA FANAMPINY</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:#111318;color:#e8e8e8}
+#toolbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(17,19,24,.96);display:flex;align-items:center;padding:0 16px;z-index:100;border-bottom:1px solid #2e3347;transform:translateY(-100%);transition:transform .35s}
+#toolbar.visible{transform:translateY(0)}
+#toolbar .tb-title{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e8e8e8;flex:1}
+#font-btn{position:fixed;top:12px;right:16px;z-index:200;background:rgba(34,39,54,.92);border:1px solid #2e3347;border-radius:8px;color:#e8e8e8;cursor:pointer;padding:6px 12px;font-size:14px;font-weight:600}
+#fontsize-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;align-items:flex-end}
+#fontsize-overlay.open{display:flex}
+#fontsize-sheet{background:#1a1e27;border-radius:20px 20px 0 0;width:100%;padding:0 0 32px;transform:translateY(100%);transition:transform .35s;border-top:1px solid #2e3347}
+#fontsize-overlay.open #fontsize-sheet{transform:translateY(0)}
+#fontsize-handle{width:40px;height:4px;background:#2e3347;border-radius:2px;margin:10px auto 0}
+#fontsize-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid #2e3347}
+#fontsize-header h3{font-size:17px;color:#c9a84c}
+#fontsize-close{background:#222736;border:none;color:#e8e8e8;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer}
+#fontsize-body{padding:24px}
+.fs-preview{background:#222736;border:1px solid #2e3347;border-radius:12px;padding:14px 16px;margin-bottom:24px;line-height:1.7;color:#e8e8e8}
+.fs-controls{display:flex;align-items:center;gap:14px}
+.fs-icon{font-size:13px;color:#9aa0b2;font-weight:600}
+.fs-icon.big{font-size:20px}
+#font-seekbar{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:#2e3347;outline:none;cursor:pointer}
+#font-seekbar::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#4e7bdb;border:3px solid #fff;cursor:pointer}
+#fs-value-label{font-size:13px;color:#7aa3f5;font-weight:600;min-width:36px;text-align:right}
+.fs-presets{display:flex;gap:8px;margin-top:20px;justify-content:center;flex-wrap:wrap}
+.fs-preset-btn{background:#222736;border:1px solid #2e3347;border-radius:8px;color:#9aa0b2;font-family:Georgia,serif;font-size:13px;padding:6px 14px;cursor:pointer}
+.fs-preset-btn.active{background:#4e7bdb;border-color:#4e7bdb;color:#fff}
+#hero{position:relative;height:260px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 24px 32px;text-align:center}
+#hero-bg{position:absolute;inset:0;background-image:url('file:///android_asset/header.jpg');background-size:cover;background-position:center;filter:brightness(.45)}
+#hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,#111318 100%)}
+#hero-content{position:relative;z-index:1}
+#hero h1{font-size:22px;font-weight:700;letter-spacing:1px;line-height:1.25;text-shadow:0 2px 12px rgba(0,0,0,.8);margin-bottom:8px}
+#hero .date-tag{font-size:13px;color:rgba(255,255,255,.7)}
+#content{max-width:680px;margin:0 auto;padding:24px 20px 80px}
+.info-block{background:#1a1e27;border:1px solid #2e3347;border-radius:12px;padding:16px 18px;margin-bottom:16px;border-left:3px solid #c9a84c}
+.info-block .label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c9a84c;margin-bottom:8px;font-weight:600}
+.info-block p{font-size:14px;line-height:1.65;color:#9aa0b2;text-align:justify}
+.section-header{margin:28px 0 18px;display:flex;align-items:center;gap:12px}
+.section-header .pill{background:#222736;border:1px solid #2e3347;border-radius:20px;padding:4px 14px;font-size:11px;letter-spacing:1px;color:#9aa0b2;text-transform:uppercase;white-space:nowrap}
+.section-header .line{flex:1;height:1px;background:#2e3347}
+.section-header h2{font-size:16px;color:#c9a84c;white-space:nowrap}
+.grand-titre{font-size:22px;font-weight:700;color:#c9a84c;text-align:center;margin:28px 0 16px;letter-spacing:.5px}
+.sous-titre{font-size:16px;font-weight:600;color:#7aa3f5;margin:20px 0 12px;padding-left:4px;border-left:3px solid #4e7bdb}
+.body-text{font-size:16px;line-height:1.8;color:#e8e8e8;margin-bottom:16px;text-align:justify}
+.v-link{color:#7aa3f5;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;white-space:nowrap}
+.quote-block{background:#1a1e27;border-left:3px solid #4e7bdb;border-radius:0 12px 12px 0;padding:16px 18px;margin:20px 0;font-style:italic;font-size:15px;line-height:1.7;color:#9aa0b2;text-align:justify}
+.quote-block cite{display:block;margin-top:8px;font-size:12px;color:#9aa0b2;font-style:normal}
+.question-card{background:#1a1e27;border:1px solid #2e3347;border-radius:16px;padding:20px;margin:20px 0}
+.question-card .q-text{font-size:17px;font-weight:600;line-height:1.6;margin-bottom:16px;color:#e8e8e8;text-align:justify}
+.verse-note-group{background:#222736;border:1px solid #2e3347;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.note-solo{width:100%;min-height:80px;background:rgba(0,0,0,.25);border:1px solid #2e3347;border-radius:8px;color:#e8e8e8;font-family:Georgia,serif;font-size:14px;padding:10px 12px;resize:vertical;outline:none;line-height:1.6}
+.note-solo::placeholder{color:#555}
+.note-solo:focus{border-color:#4e7bdb}
+.save-ind{font-size:11px;color:#7aa3f5;margin-top:4px;opacity:0;transition:opacity .4s;text-align:right}
+.save-ind.show{opacity:1}
+.bullet-list{padding-left:0;margin:12px 0 16px;list-style:none}
+.bullet-list li{padding:8px 0 8px 20px;border-bottom:1px solid #2e3347;color:#e8e8e8;font-size:16px;line-height:1.7;position:relative;text-align:justify}
+.bullet-list li:before{content:'\2022';color:#c9a84c;position:absolute;left:0;font-size:18px}
+#popup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:flex-end}
+#popup-overlay.open{display:flex}
+#popup{background:#1a1e27;border-radius:20px 20px 0 0;width:100%;max-height:75vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .35s}
+#popup-overlay.open #popup{transform:translateY(0)}
+#popup-handle{width:40px;height:4px;background:#2e3347;border-radius:2px;margin:10px auto 0;flex-shrink:0}
+#popup-header{display:flex;align-items:center;padding:14px 20px 12px;gap:10px;border-bottom:1px solid #2e3347;flex-shrink:0}
+#popup-header h3{font-size:17px;flex:1;color:#e8e8e8}
+#popup-close{background:#222736;border:none;color:#e8e8e8;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer}
+#popup-body{overflow-y:auto;padding:20px;flex:1;font-size:15px;line-height:1.9;color:#e8e8e8;text-align:justify}
+#popup-body .vn{font-weight:700;color:#7aa3f5;margin-right:6px}
+#popup-body p{margin-bottom:12px}</style>
+</head>
+<body>
+<div id="toolbar"><span class="tb-title">Zoma - FIANARANA FANAMPINY</span></div>
+<button id="font-btn" onclick="openFontSheet()">A&#8314;</button>
+<div id="fontsize-overlay" onclick="closeFontOutside(event)">
+  <div id="fontsize-sheet">
+    <div id="fontsize-handle"></div>
+    <div id="fontsize-header"><h3>Haben'ny soratra</h3><button id="fontsize-close" onclick="closeFontSheet()">&#x2715;</button></div>
+    <div id="fontsize-body">
+      <div class="fs-preview" id="fs-preview">Ny teninao dia nataoko tao am-poko.</div>
+      <div class="fs-controls"><span class="fs-icon">A</span><input type="range" id="font-seekbar" min="13" max="24" step="1" value="16" oninput="onFontSeek(this.value)"><span class="fs-icon big">A</span><span id="fs-value-label">16px</span></div>
+      <div class="fs-presets">
+        <button class="fs-preset-btn" onclick="setFontSize(13)">Kely</button>
+        <button class="fs-preset-btn active" onclick="setFontSize(16)">Kely kokoa</button>
+        <button class="fs-preset-btn" onclick="setFontSize(19)">Lehibe kokoa</button>
+        <button class="fs-preset-btn" onclick="setFontSize(22)">Lehibe</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="hero"><div id="hero-bg"></div>
+  <div id="hero-content"><h1>FIANARANA FANAMPINY</h1><div class="date-tag">Zoma 10 Jolay 2026</div></div>
+</div>
+<div id="content">
+<div class="section-header"><div class="pill">Fizarana Zoma</div><div class="line"></div><h2>LESONA 2</h2></div>
+<div class="info-block"><div class="label">Velomin'ny teniny: </div><p><span class="v-link" onclick="openPopup('Jôb. 14')">Jôb. 14</span></p></div>
+<h2 class="grand-titre">&quot;Kalvary,&quot; toko faha-78 ao amin'ny IFM.</h2>
+<p class="body-text">&quot;Eo amin'ny olona maro miara-belona amintsika ankehitriny, dia voahodidina fahatsiarovana masina ny hazo fijalian'i Kalvary. Misy hevitra masina mifandray amin ireo toe-javatra teo amin'ny hazo fijaliana. Nefa tamin'ny andron'i Paoly, ny hazo fijaliana dia narahin'ny fihetseham-po mitory faharikorikoana sy horohoro. Tsy mahagaga raha mitarika fanarabiana sy fanoherana ny fanandratana Lehilahy iray Izay maty teo amin'ny hazo fjaliana ho ny Mpamonjin'ny taranak'olombelona.</p>
+<p class="body-text">Fantatr'i Paoly tsara ny fomba handraisan'ny Jiosy sy ny Jentilisa tany Korinto ny hafatra nentiny (...). Betsaka tamin'ireo mpihaino Jiosy no ho sosotra amin'ny hafatra izay hotoriany. Teo amin'ny fiheveran'ny Grika dia tena fahadalana tsotra fotsiny ny teniny. Horaisina ho tsy ampy saina izy amin'ny fiezahany haneho fa misy ifandraisana amin'ny fanandratana ny taranak'olombelona, na amin'ny famonjena azy ny hazo fijaliana.</p>
+<p class="body-text">Nefa ho an'i Paoly dia zavatra ambony indrindra ny hazo fijaliana. Hatramin'ny nanakanana azy teo amin'ny maha mpanenjika ireo mpanaraka an'llay Nazareana nohomboana tamin'ny hazo fijaliana azy, dia tsy mbola nitsahatra ny nanome voninahitra ny hazo fijaliana izy. Tamin'io fotoana io dia nomena azy ny fanambarana momba ny fitiavan'Andriamanitra tsy voafetra araka izay ambaran'ny fahafatesan'i Kristy. Tao amin'ny fiainany dia nisy fiovana mahagaga tanteraka izay nampirindra ny drafitra sy ny fikasany rehetra tamin'ny lanitra. (...) Fantany tamin'ny alalan'ny fanandramana manokana, fa rehefa misy mpanota mibanjina ny fitiavan'ny Ray, araka izay hita ao amin'ny Zanany natao sorona, ka milefitra eo amin'ny herin'Andriamanitra miasa mangina, dia misy fiovana eo amin'ny fo, ary manomboka hatreo dia Kristy no zavatra rehetra sy ao amin'ny zavatra rehetra.&quot;- VM, <span class="v-link" onclick="openPopup('t. 214')">t. 214</span>, 215.</p>
+<h3 class="sous-titre">FANONTANIANA hifanakalozan-kevitra:</h3>
+<div class="question-card"><div class="q-text">1. Hoy i Jesosy tao an-tsahan'i Getsemane: &quot;Raiko ô, raha azo atao, dia aoka hesorina amiko ity kapoaka ity.&quot;- <span class="v-link" onclick="openPopup('Mat. 26:39')">Mat. 26:39</span>. 
+Inona no ambaranizany vavaka izany momba ny haben'ny sanda naloan'i Jesosy teo aminny hazo fijaliana?</div><div class="verse-note-group"><textarea class="note-solo" placeholder="Fanamarihana..." data-key="note_zoma__fianarana_fanampiny_q1" oninput="saveNote(this)"></textarea><div class="save-ind" id="ind_zoma__fianarana_fanampiny_q1">&#x2713; Voatahiry</div></div></div>
+<div class="question-card"><div class="q-text">2. Hoy i Paoly: &quot;Fa ny fahadalan' Andriamanitra dia hendry noho ny olona.&quot;- <span class="v-link" onclick="openPopup('1 Kôr. 1:25')">1 Kôr. 1:25</span> . 
+Ahoana no maha-samy hafa tanteraka ny fahendren' Andriamanitra amin'ny fahendren'ny olona?</div><div class="verse-note-group"><textarea class="note-solo" placeholder="Fanamarihana..." data-key="note_zoma__fianarana_fanampiny_q2" oninput="saveNote(this)"></textarea><div class="save-ind" id="ind_zoma__fianarana_fanampiny_q2">&#x2713; Voatahiry</div></div></div>
+<div class="question-card"><div class="q-text">3. Vato mahatafintohina an'ireo Jiosy ary fahadalana ho anireo Grika ny hafatra momba an'i Kristy voahombo teo aminny hazo fijaliana. Inona ireo lohahevitra ara-Baiboly toriantsika ankehitriny izay mety miteraka fiheverana toy izany koa eo amin' ireo mpihaino, nahoana?</div><div class="verse-note-group"><textarea class="note-solo" placeholder="Fanamarihana..." data-key="note_zoma__fianarana_fanampiny_q3" oninput="saveNote(this)"></textarea><div class="save-ind" id="ind_zoma__fianarana_fanampiny_q3">&#x2713; Voatahiry</div></div></div>
+<div class="question-card"><div class="q-text">4. Ambaran'i Paoly fa ny olona izay araka ny nofo ihany dia tsy mba mandray izay an'ny Fanahin' Andriamanitra&quot;- <span class="v-link" onclick="openPopup('1 Kôr. 2:14')">1 Kôr. 2:14</span> . 
+Araka izany, ahoana ny fomba hiresahantsika ny momba an'i Jesosy amin'ireny olona ireny mba hanohina ny fony? Sa ny asa ataontsika ihany no mety hahatratra azy ireo?
+</div><div class="verse-note-group"><textarea class="note-solo" placeholder="Fanamarihana..." data-key="note_zoma__fianarana_fanampiny_q4" oninput="saveNote(this)"></textarea><div class="save-ind" id="ind_zoma__fianarana_fanampiny_q4">&#x2713; Voatahiry</div></div></div>
+
+</div>
+<div id="popup-overlay" onclick="closePopupOutside(event)">
+  <div id="popup"><div id="popup-handle"></div>
+    <div id="popup-header"><span>&#128214;</span><h3 id="popup-title">&#8212;</h3><button id="popup-close" onclick="closePopup()">&#x2715;</button></div>
+    <div id="popup-body"></div>
+  </div>
+</div>
+<script>const B={"1 Kôr. 2:14":[{n:"",t:"[14] Fa ny olona izay araka ny nofo ihany dia tsy mba mandray izay an'ny Fanahin'Andriamanitra; fa fahadalana aminy izany sady tsy azony, satria araka ny Fanahy no amantarana izany."}],
+"1 Kôr. 1:25":[{n:"",t:"[25] Fa ny fahadalan'Andriamanitra dia hendry noho ny olona; ary ny fahalemen'Andriamanitra mahery noho ny olona."}],
+"Mat. 26:39":[{n:"",t:"[39] Ary nony nandroso kelikely Izy, dia niankohoka ka nivavaka hoe: Raiko ô, raha azo atao, dia aoka hesorina amiko ity kapoaka ity; nefa aoka tsy ny sitrapoko anie no hatao, fa ny Anao."}],
+"Jôb. 14":[{n:"",t:"[1] Ny olona tera-behivavy dia vitsy andro sady vontom-pahoriana."},{n:"",t:"[2] Mitsimoka tahaka ny voninkazo izy ka jinjana, ary mihelina tahaka ny aloka izy ka tsy mitoetra."},{n:"",t:"[3] kanefa amin'izay toy izany foana no ampihiratanao ny masonao? ka dia izay izaho avy no entinao hifandahatra aminao amin'ny fitsarana!"},{n:"",t:"[4] Aiza no misy madio ateraky ny tsy madio? Tsy misy na dia iray akory aza."},{n:"",t:"[5] Raha voafetra ny androny, ary voatendrinao ny isan'ny volana iainany, ary asianao fefy tsy azony ihoarana,"},{n:"",t:"[6] Dia mihodina tsy hanatrika azy Hianao, mba hitsaharany, ka hifaliany amin'ny androny toy ny mpikarama."},{n:"",t:"[7] Fa azo antenaina ny hazo, satria na dia kapaina aza izy, dia mbola hitsimoka indray, ka tsy maintsy hisy ny solofony;"},{n:"",t:"[8] Na dia efa tonga antitra ao amin'ny tany aza ny fakany, ary maty ao amin'ny vovoka ny fotony,"},{n:"",t:"[9] Raha mahare ny fofon-drano izy, dia hitsimoka indray. Ka handrahaka tahaka ny hazo tanora nambolena."},{n:"",t:"[10] Fa ny olona kosa maty ka miampatra; Eny, miala aina ny olona, ary aiza izy?"},{n:"",t:"[11] Ny rano miala eo amin'ny kamory, ary ny ony mihena ka ritra,"},{n:"",t:"[12] Ary toy izany koa ny olona; mandry izy ka tsy hitsangana intsony; Eny, mandra-paha-tsy hisian'ny lanitra dia tsy hahatsiaro izy na hofohazina amin'ny torimasony."},{n:"",t:"[13] Enga anie ka hanafina ahy any amin'ny fiainan-tsi-hita Hianao Ka hampiery ahy mandra-pahafaky ny fahatezeranao! Ary hanendry fetr'andro ho ahy, dia hahatsiaro ahy"},{n:"",t:"[14] Raha maty ny olona, moa ho velona indray va izy? Raha izany, dia hiandry mandritra ny andro fanafihako aho, mandra-pahatongan'ny fahafahako."},{n:"",t:"[15] Dia hiantso Hianao, ary izaho hamaly Anao; ary mba halahelo ny asan'ny tananao Hianao."},{n:"",t:"[16] Fa ankehitriny manisa ny diako Hianao; Tsy mitsikilo ny fahotako va Hianao?"},{n:"",t:"[17] Efa voaisy tombo-kase ny kitapo misy ny fahadisoako; Ary voazaitranao ny heloko."},{n:"",t:"[18] Kanefa na dia ny tendrombohitra aza, raha mianjera, dia mihalevona; Ary ny vatolampy dia afindra hiala amin'ny fitoerany;"},{n:"",t:"[19] Lanin'ny rano ny vato; ary indaosin'ny riaka ny vovo-tany: Toy izany no fanimbanao ny fanantenan'ny zanak'olombelona."},{n:"",t:"[20] Mandresy azy ho mandrakizay Hianao, ka lasa izy; Manova ny tarehiny Hianao ka mampandeha azy."},{n:"",t:"[21] Omem-boninahitra ny zanany nefa tsy fantany; Ary mietry ireo, nefa tsy hitany."},{n:"",t:"[22] Ny mihatra amin'ny tenany ihany no mampanaintaina azy, ary ny mihatra amin'ny tenany ihany no mampalahelo ny fanahiny."}]};
+function openPopup(ref){document.body.style.overflow='hidden';document.getElementById('popup-title').textContent=ref.toUpperCase();document.getElementById('popup-body').innerHTML='<p style="color:#9aa0b2;font-style:italic;text-align:center;padding:20px 0">Miandry...</p>';document.getElementById('popup-overlay').classList.add('open');setTimeout(()=>{const k=Object.keys(B).find(k=>k.toLowerCase()===ref.toLowerCase());const vs=k?B[k]:null;const b=document.getElementById('popup-body');if(vs&&vs.length){b.innerHTML='<p style="font-size:18px;font-weight:700;color:#c9a84c;margin-bottom:16px">'+ref.replace(/:[\d].*/,'').trim().toUpperCase()+'</p>'+vs.map(v=>'<p>'+(v.n?'<span class=\"vn\">['+v.n+']</span>':'')+v.t+'</p>').join('');}else{b.innerHTML='<p style="color:#9aa0b2;font-style:italic">Tsy hita: <strong>'+ref+'</strong></p>';}},180);}
+function closePopup(){document.body.style.overflow='';document.getElementById('popup-overlay').classList.remove('open');}
+function closePopupOutside(e){if(e.target===document.getElementById('popup-overlay'))closePopup();}
+let db;function openDB(){return new Promise((r,j)=>{const q=indexedDB.open('BaibolyStudyDB',1);q.onupgradeneeded=e=>e.target.result.createObjectStore('notes',{keyPath:'key'});q.onsuccess=e=>r(e.target.result);q.onerror=e=>j(e);});}
+async function initDB(){db=await openDB();document.querySelectorAll('[data-key]').forEach(async ta=>{const tx=db.transaction('notes','readonly');const q=tx.objectStore('notes').get(ta.dataset.key);q.onsuccess=e=>{if(e.target.result)ta.value=e.target.result.value;};});}
+let st={};function saveNote(ta){const k=ta.dataset.key;clearTimeout(st[k]);st[k]=setTimeout(async()=>{if(!db)db=await openDB();const tx=db.transaction('notes','readwrite');tx.objectStore('notes').put({key:k,value:ta.value});const id='ind_'+k.replace('note_','');const el=document.getElementById(id);if(el){el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800);}},600);}
+const FS_KEY='baiboly_font_size';
+function applyFontSize(s){document.querySelectorAll('.body-text,.quote-block,.q-text,.info-block p,.fs-preview').forEach(el=>el.style.fontSize=s+'px');const sb=document.getElementById('font-seekbar');if(sb)sb.value=s;const lb=document.getElementById('fs-value-label');if(lb)lb.textContent=s+'px';document.querySelectorAll('.fs-preset-btn').forEach(b=>b.classList.toggle('active',parseInt(b.getAttribute('onclick').match(/\d+/)[0])===s));}
+function onFontSeek(v){applyFontSize(parseInt(v));localStorage.setItem(FS_KEY,v);}
+function setFontSize(s){applyFontSize(s);localStorage.setItem(FS_KEY,s);}
+function openFontSheet(){document.getElementById('fontsize-overlay').classList.add('open');}
+function closeFontSheet(){document.getElementById('fontsize-overlay').classList.remove('open');}
+function closeFontOutside(e){if(e.target===document.getElementById('fontsize-overlay'))closeFontSheet();}
+new IntersectionObserver(entries=>{document.getElementById('toolbar').classList.toggle('visible',!entries[0].isIntersecting);},{threshold:0.1}).observe(document.getElementById('hero'));
+applyFontSize(parseInt(localStorage.getItem(FS_KEY))||16);initDB();
+</script>
+</body>
+</html>
