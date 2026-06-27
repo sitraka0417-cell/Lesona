@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alakamisy - NY EPISTILIN'I PAOLY HO AN'NY KORINTIANINA</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:#111318;color:#e8e8e8}
+#toolbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(17,19,24,.96);display:flex;align-items:center;padding:0 16px;z-index:100;border-bottom:1px solid #2e3347;transform:translateY(-100%);transition:transform .35s}
+#toolbar.visible{transform:translateY(0)}
+#toolbar .tb-title{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e8e8e8;flex:1}
+#font-btn{position:fixed;top:12px;right:16px;z-index:200;background:rgba(34,39,54,.92);border:1px solid #2e3347;border-radius:8px;color:#e8e8e8;cursor:pointer;padding:6px 12px;font-size:14px;font-weight:600}
+#fontsize-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;align-items:flex-end}
+#fontsize-overlay.open{display:flex}
+#fontsize-sheet{background:#1a1e27;border-radius:20px 20px 0 0;width:100%;padding:0 0 32px;transform:translateY(100%);transition:transform .35s;border-top:1px solid #2e3347}
+#fontsize-overlay.open #fontsize-sheet{transform:translateY(0)}
+#fontsize-handle{width:40px;height:4px;background:#2e3347;border-radius:2px;margin:10px auto 0}
+#fontsize-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid #2e3347}
+#fontsize-header h3{font-size:17px;color:#c9a84c}
+#fontsize-close{background:#222736;border:none;color:#e8e8e8;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer}
+#fontsize-body{padding:24px}
+.fs-preview{background:#222736;border:1px solid #2e3347;border-radius:12px;padding:14px 16px;margin-bottom:24px;line-height:1.7;color:#e8e8e8}
+.fs-controls{display:flex;align-items:center;gap:14px}
+.fs-icon{font-size:13px;color:#9aa0b2;font-weight:600}
+.fs-icon.big{font-size:20px}
+#font-seekbar{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:#2e3347;outline:none;cursor:pointer}
+#font-seekbar::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#4e7bdb;border:3px solid #fff;cursor:pointer}
+#fs-value-label{font-size:13px;color:#7aa3f5;font-weight:600;min-width:36px;text-align:right}
+.fs-presets{display:flex;gap:8px;margin-top:20px;justify-content:center;flex-wrap:wrap}
+.fs-preset-btn{background:#222736;border:1px solid #2e3347;border-radius:8px;color:#9aa0b2;font-family:Georgia,serif;font-size:13px;padding:6px 14px;cursor:pointer}
+.fs-preset-btn.active{background:#4e7bdb;border-color:#4e7bdb;color:#fff}
+#hero{position:relative;height:260px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 24px 32px;text-align:center}
+#hero-bg{position:absolute;inset:0;background-image:url('file:///android_asset/header.jpg');background-size:cover;background-position:center;filter:brightness(.45)}
+#hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,#111318 100%)}
+#hero-content{position:relative;z-index:1}
+#hero h1{font-size:22px;font-weight:700;letter-spacing:1px;line-height:1.25;text-shadow:0 2px 12px rgba(0,0,0,.8);margin-bottom:8px}
+#hero .date-tag{font-size:13px;color:rgba(255,255,255,.7)}
+#content{max-width:680px;margin:0 auto;padding:24px 20px 80px}
+.info-block{background:#1a1e27;border:1px solid #2e3347;border-radius:12px;padding:16px 18px;margin-bottom:16px;border-left:3px solid #c9a84c}
+.info-block .label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c9a84c;margin-bottom:8px;font-weight:600}
+.info-block p{font-size:14px;line-height:1.65;color:#9aa0b2;text-align:justify}
+.section-header{margin:28px 0 18px;display:flex;align-items:center;gap:12px}
+.section-header .pill{background:#222736;border:1px solid #2e3347;border-radius:20px;padding:4px 14px;font-size:11px;letter-spacing:1px;color:#9aa0b2;text-transform:uppercase;white-space:nowrap}
+.section-header .line{flex:1;height:1px;background:#2e3347}
+.section-header h2{font-size:16px;color:#c9a84c;white-space:nowrap}
+.grand-titre{font-size:22px;font-weight:700;color:#c9a84c;text-align:center;margin:28px 0 16px;letter-spacing:.5px}
+.sous-titre{font-size:16px;font-weight:600;color:#7aa3f5;margin:20px 0 12px;padding-left:4px;border-left:3px solid #4e7bdb}
+.body-text{font-size:16px;line-height:1.8;color:#e8e8e8;margin-bottom:16px;text-align:justify}
+.v-link{color:#7aa3f5;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;white-space:nowrap}
+.quote-block{background:#1a1e27;border-left:3px solid #4e7bdb;border-radius:0 12px 12px 0;padding:16px 18px;margin:20px 0;font-style:italic;font-size:15px;line-height:1.7;color:#9aa0b2;text-align:justify}
+.quote-block cite{display:block;margin-top:8px;font-size:12px;color:#9aa0b2;font-style:normal}
+.question-card{background:#1a1e27;border:1px solid #2e3347;border-radius:16px;padding:20px;margin:20px 0}
+.question-card .q-text{font-size:17px;font-weight:600;line-height:1.6;margin-bottom:16px;color:#e8e8e8;text-align:justify}
+.verse-note-group{background:#222736;border:1px solid #2e3347;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.note-solo{width:100%;min-height:80px;background:rgba(0,0,0,.25);border:1px solid #2e3347;border-radius:8px;color:#e8e8e8;font-family:Georgia,serif;font-size:14px;padding:10px 12px;resize:vertical;outline:none;line-height:1.6}
+.note-solo::placeholder{color:#555}
+.note-solo:focus{border-color:#4e7bdb}
+.save-ind{font-size:11px;color:#7aa3f5;margin-top:4px;opacity:0;transition:opacity .4s;text-align:right}
+.save-ind.show{opacity:1}
+.bullet-list{padding-left:0;margin:12px 0 16px;list-style:none}
+.bullet-list li{padding:8px 0 8px 20px;border-bottom:1px solid #2e3347;color:#e8e8e8;font-size:16px;line-height:1.7;position:relative;text-align:justify}
+.bullet-list li:before{content:'\2022';color:#c9a84c;position:absolute;left:0;font-size:18px}
+#popup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:flex-end}
+#popup-overlay.open{display:flex}
+#popup{background:#1a1e27;border-radius:20px 20px 0 0;width:100%;max-height:75vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .35s}
+#popup-overlay.open #popup{transform:translateY(0)}
+#popup-handle{width:40px;height:4px;background:#2e3347;border-radius:2px;margin:10px auto 0;flex-shrink:0}
+#popup-header{display:flex;align-items:center;padding:14px 20px 12px;gap:10px;border-bottom:1px solid #2e3347;flex-shrink:0}
+#popup-header h3{font-size:17px;flex:1;color:#e8e8e8}
+#popup-close{background:#222736;border:none;color:#e8e8e8;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer}
+#popup-body{overflow-y:auto;padding:20px;flex:1;font-size:15px;line-height:1.9;color:#e8e8e8;text-align:justify}
+#popup-body .vn{font-weight:700;color:#7aa3f5;margin-right:6px}
+#popup-body p{margin-bottom:12px}</style>
+</head>
+<body>
+<div id="toolbar"><span class="tb-title">Alakamisy - NY EPISTILIN'I PAOLY HO AN'NY KORINTIANINA</span></div>
+<button id="font-btn" onclick="openFontSheet()">A&#8314;</button>
+<div id="fontsize-overlay" onclick="closeFontOutside(event)">
+  <div id="fontsize-sheet">
+    <div id="fontsize-handle"></div>
+    <div id="fontsize-header"><h3>Haben'ny soratra</h3><button id="fontsize-close" onclick="closeFontSheet()">&#x2715;</button></div>
+    <div id="fontsize-body">
+      <div class="fs-preview" id="fs-preview">Ny teninao dia nataoko tao am-poko.</div>
+      <div class="fs-controls"><span class="fs-icon">A</span><input type="range" id="font-seekbar" min="13" max="24" step="1" value="16" oninput="onFontSeek(this.value)"><span class="fs-icon big">A</span><span id="fs-value-label">16px</span></div>
+      <div class="fs-presets">
+        <button class="fs-preset-btn" onclick="setFontSize(13)">Kely</button>
+        <button class="fs-preset-btn active" onclick="setFontSize(16)">Kely kokoa</button>
+        <button class="fs-preset-btn" onclick="setFontSize(19)">Lehibe kokoa</button>
+        <button class="fs-preset-btn" onclick="setFontSize(22)">Lehibe</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="hero"><div id="hero-bg"></div>
+  <div id="hero-content"><h1>NY EPISTILIN'I PAOLY HO AN'NY KORINTIANINA</h1><div class="date-tag">Alakamisy 2 Jolay 2026</div></div>
+</div>
+<div id="content">
+<div class="section-header"><div class="pill">Fizarana Alakamisy</div><div class="line"></div><h2>LESONA 1</h2></div>
+<div class="info-block"><div class="label">Velomin'ny teniny:</div><p><span class="v-link" onclick="openPopup('Jôb. 6')">Jôb. 6</span></p></div>
+<div class="question-card"><div class="q-text">Vakio ny <span class="v-link" onclick="openPopup('1 Kor. 1:11-13')">1 Kor. 1:11-13</span> ; <span class="v-link" onclick="openPopup('1 Kôr.4:14')">1 Kôr.4:14</span> ;<span class="v-link" onclick="openPopup('1 Kôr. 5:11')">1 Kôr. 5:11</span> ; <span class="v-link" onclick="openPopup('1 Kôr. 7:1')">1 Kôr. 7:1</span> ; ary <span class="v-link" onclick="openPopup('1 Kôr. 14:37,40')">1 Kôr. 14:37,40</span> . 
+Vakio koa ny <span class="v-link" onclick="openPopup('2 Kôr. 1:12')">2 Kôr. 1:12</span> ; <span class="v-link" onclick="openPopup('2 Kôr. 2:9')">2 Kôr. 2:9</span> ; <span class="v-link" onclick="openPopup('2 Kôr. 11:3')">2 Kôr. 11:3</span> ary <span class="v-link" onclick="openPopup('2 Kôr. 13:10')">2 Kôr. 13:10</span> . Ahoana no anampian'ireo andininy ireo antsika hahatakatra ny antony nanoratan'i Paoly epistily ho an'ny Korintianina?</div><div class="verse-note-group"><textarea class="note-solo" placeholder="Fanamarihana..." data-key="note_alakamisy__ny_epistilini_paoly_ho_anny_korintianina_q1" oninput="saveNote(this)"></textarea><div class="save-ind" id="ind_alakamisy__ny_epistilini_paoly_ho_anny_korintianina_q1">&#x2713; Voatahiry</div></div></div>
+<p class="body-text">Tany Efesosy i Paoly no nanoratra ny 1 Kôr (<span class="v-link" onclick="openPopup('1 Kôr. 16:5-9')">1 Kôr. 16:5-9</span>). Ny fianakavian'i Kloa no nitondra tatitra tany aminy fa tsy tsara ny toe-draharaha tany Korinto (<span class="v-link" onclick="openPopup('1 Kôr. 1:11')">1 Kôr. 1:11</span>). Resahin'i Paoly ao amin'ny 1 Kor. 1-6 ny amin'ireo olana notantarain'i Kloa. Anisan'izany ny fisaraham-bazana, ny fahalotoam-pitondrantena, ny fifampitoriana any amin'ny fitsarana, ary ny fijangajangana. Naharay taratasy misy fanontaniana manokana koa i Paoly ( <span class="v-link" onclick="openPopup('1 Kor. 7:1')">1 Kor. 7:1</span> ). Manomboka eo amin'ny toko faha-7 ka hatrany amin'ny farany no amaliany izany. Ireo fanontaniana ireo dia mikasika ny fanambadiana, ny fisaraham-panambadiana, ny maha-mpitovo, ny hena natao fanatitra tamin'ny sampy, ny fitondrantena mandritra ny fanompoam-pivavahana, ny fampiasana ny fanomezam-pahasoavana, ary ny fiheveran-diso momba ny fitsanganana amin'ny maty. Feno olana sy tsy mbola ampy fahamatorana ny fiangonana tao Korinto. Mety manana olana maro ny fiangonana misy anao, nefa azo inoana fa mbola ratsy kokoa noho izany ny fiangonana tany Korinto.</p>
+<p class="body-text">Ny epistily voalohany nosoratan'i Paoly ho an'ny Korintiana dia mihatra amin'izao androntsika izao koa. Rehefa dinihana, tsy mitovy amin'izany rahateo ve ny olana any amin'ny ankamaroan'ny fiangonantsika ankehitriny, amin'ny ambaratonga sasany? Maro ny hafatra ho antsika ao amin'io epistily io. &quot;Anisan'ny feno ventin- kevitra indindra, sady feno fananarana ary feno fitiavana tokoa tamin'ny epistily rehetra nosoratany izany –VM, <span class="v-link" onclick="openPopup('t. 263')">t. 263</span>.</p>
+<p class="body-text">Mety ho nanoratra epistily telo na efatra ho an'ny Korintianina i Paoly (ampitahao amin'ny <span class="v-link" onclick="openPopup('2 Kor. 10:9')">2 Kor. 10:9</span>). Nanoratra epistily voalohany izy talohan'ny 1 Kôr (<span class="v-link" onclick="openPopup('1 Kôr. 5:9')">1 Kôr. 5:9</span>). Saingy very izany. Talohan'ny 2 Kôr. , dia nanoratra epistily antsoin'ireo mpandinika hoe &quot;epistily hentitra&quot; izy (<span class="v-link" onclick="openPopup('2 Kor. 2:3,4,9')">2 Kor. 2:3,4,9</span> ; <span class="v-link" onclick="openPopup('2 Kôr. 7:8')">2 Kôr. 7:8</span>), nefa very koa izany. Misy ireo mihevitra fa ny 1 Kôr no tiany hambara amin'zany, na hoe voatahiry ao amin'ny 2 Kôr ny ampahany amin'io epistily io.</p>
+<p class="body-text">Ao amin'ny 2 Korintiana no ahafantarantsika fa nisy fiantraikany tamin ireo mambra tao Korinto ny kolontsaina manodidina. Nomen'izy ireo lanja ny zavatra toy ny fifaninanana, ny fahefana, ary ny harena; izay rehetra mety ho olana ho an'ny fiangonantsika ankehitriny koa. I Paoly kosa niezaka ny hametraka kolontsaina mifantoka amin'i Kristy fomba fijery ara-pilazantsara hijerena izao tontolo izao. Zava-dehibe ilaintsika ankehitriny koa izany fomba fijery izany.</p>
+<div class="question-card"><div class="q-text">Vakio indray ny <span class="v-link" onclick="openPopup('2 Kor. 2:4')">2 Kor. 2:4</span> . 
+Inona no ambaran'izany amintsika momba ny fiahian' Paoly Ireto olona Ireto? 
+Manao ahoana ny toe-pontsika amin'ny hafa raha mitaha amin'izany?</div><div class="verse-note-group"><textarea class="note-solo" placeholder="Fanamarihana..." data-key="note_alakamisy__ny_epistilini_paoly_ho_anny_korintianina_q2" oninput="saveNote(this)"></textarea><div class="save-ind" id="ind_alakamisy__ny_epistilini_paoly_ho_anny_korintianina_q2">&#x2713; Voatahiry</div></div></div>
+
+</div>
+<div id="popup-overlay" onclick="closePopupOutside(event)">
+  <div id="popup"><div id="popup-handle"></div>
+    <div id="popup-header"><span>&#128214;</span><h3 id="popup-title">&#8212;</h3><button id="popup-close" onclick="closePopup()">&#x2715;</button></div>
+    <div id="popup-body"></div>
+  </div>
+</div>
+<script>const B={"2 Kor. 2:4":[{n:"",t:"[4] Fa tamin'ny haben'ny fahoriana sy ny alahelon'ny foko no nanoratako taminareo tamin'ny ranomaso be, tsy ny hampalahelovana anareo, fa ny mba hahafantaranareo ny fitiavana izay itiavako anareo indrindra."}],
+"2 Kôr. 7:8":[{n:"",t:"[8] Fa na dia nampalahelo anareo tamin'ny epistily aza aho, dia tsy manenina intsony, na dia nanenina ihany aza teo; fa fantatro fa efa nampalahelo anareo izany epistily izany, kanefa vetivety ihany."}],
+"2 Kor. 2:3,4,9":[{n:"",t:"[3] eny, aseho ho epistilin'i Kristy izay entinay ianareo, tsy nosoratana tamin'ny ranomainty anefa, fa tamin'ny Fanahin'Andriamanitra velona, tsy teo amin'izay tena vato fisaka, fa teo amin'izay vato fisaka nofo, dia ny fo."},{n:"",t:"[4] Ary manana izany fahatokiana izany ny amin'Andriamanitra izahay amin'ny alalan'i Kristy."},{n:"",t:"[9] Fa raha nisy voninahitra ny fanompoana nitondra ny fanamelohana, mainka hanan-tombom-boninahitra ny fanompoana mitondra ny fahamarinana."}],
+"1 Kôr. 5:9":[{n:"",t:"[9] Nanoratra taminareo teo amin'ny epistily aho mba tsy hiharoharoanareo amin'izay mpijangajanga;"}],
+"2 Kor. 10:9":[{n:"",t:"[9] mba tsy hisehoako toy ny ta-hampitahotra anareo amin'ny epistily."}],
+"1 Kôr. 1:11":[{n:"",t:"[11] Fa efa voalazan'ny avy amin'ny ankohonan'i Kloa tamiko ny amin'ny toetrareo, ry rahalahiko, fa misy fifampiandaniana eo aminareo."}],
+"1 Kôr. 16:5-9":[{n:"",t:"[5] Hankatỳ aminareo aho, rehefa namaky an'i Makedonia - fa hamaky an'i Makedonia aho -"},{n:"",t:"[6] ary angamba hitoetra eo aminareo aho, na handany ny ririnina aza, mba hanateranareo ahy amin'izay halehako."},{n:"",t:"[7] Fa tsy mikasa hamangy anareo toy ny mandalo aho ankehitriny; fa manantena hitoetra elaela eo aminareo aho, raha sitrapon'ny Tompo."},{n:"",t:"[8] Nefa hitoetra any Efesosy aho mandra-pihavin'ny Pentekosta;"},{n:"",t:"[9] fa varavarana lehibe no voavoha ho ahy hahazoako miasa tsara, nefa maro ny mpanohitra."}],
+"2 Kôr. 13:10":[{n:"",t:"[10] Izany no anoratako izany zavatra izany, raha tsy eo aminareo aho, fandrao, rehefa tonga aho, dia hanao izay mafy araka ny hery izay nomen'ny Tompo ahy ho fananganana, fa tsy ho fandravana."}],
+"2 Kôr. 11:3":[{n:"",t:"[3] Fa matahotra aho, fandrao ny sainareo ho simba hiala amin'ny fahitsiam-po sy ny fahadiovana amin'i Kristy, tahaka ny namitahan'ny menarana an'i Eva tamin'ny fihendreny."}],
+"2 Kôr. 2:9":[{n:"",t:"[9] Fa izany koa no nanoratako, mba ho fantatro izay toetrareo, na manaiky amin'ny zavatra rehetra ianareo,na tsia."}],
+"2 Kôr. 1:12":[{n:"",t:"[12] Fa izao no ataonay ho voninahitray: ny fieritreretanay no vavolombelona fa tamin'ny fahamasinana sy ny fahadiovam-po avy amin'Andriamanitra, tsy tamin'ny fahendren'ny nofo, fa tamin'ny fahasoavan'Andriamanitra, no nitondranay tena teo amin'izao tontolo izao, mainka fa teo aminareo."}],
+"1 Kôr. 14:37,40":[{n:"",t:"[37] Raha misy manao azy ho mpaminany, na ho manana fahaizam-panahy, dia aoka ho fantany tsara fa didin'ny Tompo ny teny izay soratako ho aminareo."},{n:"",t:"[40] kanefa aoka ny zavatra rehetra hatao amin'ny fahamendrehana sy ny filaminana."}],
+"1 Kôr. 7:1":[{n:"",t:"[1]  Ary ny amin'ireo zavatra nosoratanareo, dia tsara amin'ny lehilahy raha tsy mikasi-behivavy akory."}],
+"1 Kôr. 5:11":[{n:"",t:"[11] Fa ny nanoratako taminareo, dia ny mba tsy hiharoharoanareo aminy, raha misy atao hoe rahalahy, nefa mpijangajanga, na mpierina, na mpanompo sampy, na mpanaratsy, na mpimamo, na mpanao an-keriny, dia aza miara-mihinana akory amin'ny toy izany ianareo."}],
+"1 Kôr.4:14":[{n:"",t:"[14] Tsy ny hahamenatra anareo anefa no anoratako izany zavatra izany, fa mananatra anareo toy ny zanako malalako aho."}],
+"1 Kor. 1:11-13":[{n:"",t:"[11] Fa efa voalazan'ny avy amin'ny ankohonan'i Kloa tamiko ny amin'ny toetrareo, ry rahalahiko, fa misy fifampiandaniana eo aminareo."},{n:"",t:"[12] Izao anefa no anaovako izany: Hianareo samy manao hoe: Izaho an'i Paoly, na: Izaho an'i Apolosy, na: Izaho an'i Kefasy, na: Izaho an'i Kristy."},{n:"",t:"[13] Voazarazara va Kristy? Paoly va no voahombo tamin'ny hazo fijaliana hamonjy anareo, sa ho amin'ny anaran'i Paoly no nanaovam-batisa anareo?"}],
+"Jôb. 6":[{n:"",t:"[Ny teny navalin'i Joba]"},{n:"",t:"[1]  Dia namaly Joba ka nanao hoe:"},{n:"",t:"[2] Enga anie ka holanjaina tokoa ny fahasosorako, ka hampifandaniaina amin'ny mizana izy sy ny fahoriako!"},{n:"",t:"[3] Fa ankehitriny mavesatra noho ny fasika any an-dranomasina ny fahoriako, koa dia nirediredy aho."},{n:"",t:"[4] Fa ny zana-tsipiky ny Tsitoha mitsatoka amiko, ka mifoka ny poizina avy aminy ny fanahiko; Ary ny fampitahorana Andriamanitra milahatra hamely ahy."},{n:"",t:"[5] Maneno va ny boriki-dia, raha eo amin'ny vilona? Na mimàmà va ny omby, raha eo amin'ny fihinany?"},{n:"",t:"[6] Azo hanina va ny matsatso, raha tsy asian-tsira? Na mba misy tsirony va ny tafotsin'atody?"},{n:"",t:"[7] Ny zavatra izay nolaviko tsy hotendrena, dia ireny no tsy maintsy haniko, na dia maharikoriko ahy aza."},{n:"",t:"[8] Enga anie ka ho azoko izay angatahiko, ary homen'Andriamanitra ahy anie izay iriko!"},{n:"",t:"[9] Ka ho sitrak'Andriamanitra anie ny hanorotoro ahy! Eny, halefany anie ny tànany ka hahamaito ny aiko,"},{n:"",t:"[10] Dia hahita fiononana amin'izany aho ka hiravoravo na dia amin'ny fangirifiriana tsy mifaditrovana aza, satria tsy nandà ny tenin'ny Iray Masina aho."},{n:"",t:"[11] Inona moa ny heriko, no hanantena aho? Ary hanao ahoana moa ny farako, no hanindry fo aho?"},{n:"",t:"[12] Herim-bato va ny heriko? Na varahina va ny nofoko?"},{n:"",t:"[13] Tsy efa foana va ny hery ho entiko mamonjy tena, ary tsy efa nakifika hiala amiko va ny faharetana?"},{n:"",t:"[14] Izay efa mivarahontsana dia tokony hiantran'ny sakaizany. Fandrao mahafoy ny fahatahorana ny Tsitoha izy."},{n:"",t:"[15] Ny rahalahiko mampihambo manana ahy tahaka ny ranotrambo, dia tahaka ny mason-drano any an-dohasahan-driaka, izay malaky ritra,"},{n:"",t:"[16] Izay mainty azon'ny ranomandry Sady iafenan'ny oram-panala;"},{n:"",t:"[17] Fa raha taninin'ny hainandro izy, dia levona; raha maina ny andro, dia ritra eo amin'ny fitoerany izy;"},{n:"",t:"[18] Mivilivily no fandehany tankina izy ka levona."},{n:"",t:"[19] Ny antokon'i Tema mitazana, ny andian'i Sheba manantena azy;"},{n:"",t:"[20] Very hevitra ireo, satria samy nanampo; tonga teo izy, kanjo nangaihay."},{n:"",t:"[21] Fa ankehitriny efa tsinontsinona ianareo; Nahita ny fahoriana ianareo ka raiki-tahotra."},{n:"",t:"[22] Moa aho va efa nanao hoe: Omeo aho, ka mahafoiza zavatra ho ahy amin'ny fanananareo,"},{n:"",t:"[23] Ary vonjeo amin'ny tanan'ny fahavalo aho, ka afaho amin'ny tanan'ny mpitohatoha?"},{n:"",t:"[24] Mampianara ahy, dia hangina aho; Ary ampahafantaro izay nahadisoako aho."},{n:"",t:"[25] Endrey ny herin'ny teny marina! Fa mba mahavoa inona kosa moa ny anatra ataonareo?"},{n:"",t:"[26] Ny amin'ny teniko ihany va no ananaranareo ahy? Fa ho amin'ny rivotra ny tenin'ny olona mamoy fo."},{n:"",t:"[27] Eny, fa na dia ny kamboty aza dia ataonareo loka, ary ny sakaizanareo dia ataonareo varotra."},{n:"",t:"[28] Fa ankehitriny, masìna ianareo, mba atreho kely aho, dia ho hitanareo fa tsy handainga tsy akory aho."},{n:"",t:"[29] Masìna ianareo, diniho indray aho, ary aoka tsy hisy fitsarana tsy marina; eny, diniho indray aho, fa mbola ao ihany ny fahamarinako."},{n:"",t:"[30] Moa misy heloka va eo amin'ny lelako?"}],
+"1 Kor. 7:1":[{n:"",t:"[1]  Ary ny amin'ireo zavatra nosoratanareo, dia tsara amin'ny lehilahy raha tsy mikasi-behivavy akory."}]};
+function openPopup(ref){document.body.style.overflow='hidden';document.getElementById('popup-title').textContent=ref.toUpperCase();document.getElementById('popup-body').innerHTML='<p style="color:#9aa0b2;font-style:italic;text-align:center;padding:20px 0">Miandry...</p>';document.getElementById('popup-overlay').classList.add('open');setTimeout(()=>{const k=Object.keys(B).find(k=>k.toLowerCase()===ref.toLowerCase());const vs=k?B[k]:null;const b=document.getElementById('popup-body');if(vs&&vs.length){b.innerHTML='<p style="font-size:18px;font-weight:700;color:#c9a84c;margin-bottom:16px">'+ref.replace(/:[\d].*/,'').trim().toUpperCase()+'</p>'+vs.map(v=>'<p>'+(v.n?'<span class=\"vn\">['+v.n+']</span>':'')+v.t+'</p>').join('');}else{b.innerHTML='<p style="color:#9aa0b2;font-style:italic">Tsy hita: <strong>'+ref+'</strong></p>';}},180);}
+function closePopup(){document.body.style.overflow='';document.getElementById('popup-overlay').classList.remove('open');}
+function closePopupOutside(e){if(e.target===document.getElementById('popup-overlay'))closePopup();}
+let db;function openDB(){return new Promise((r,j)=>{const q=indexedDB.open('BaibolyStudyDB',1);q.onupgradeneeded=e=>e.target.result.createObjectStore('notes',{keyPath:'key'});q.onsuccess=e=>r(e.target.result);q.onerror=e=>j(e);});}
+async function initDB(){db=await openDB();document.querySelectorAll('[data-key]').forEach(async ta=>{const tx=db.transaction('notes','readonly');const q=tx.objectStore('notes').get(ta.dataset.key);q.onsuccess=e=>{if(e.target.result)ta.value=e.target.result.value;};});}
+let st={};function saveNote(ta){const k=ta.dataset.key;clearTimeout(st[k]);st[k]=setTimeout(async()=>{if(!db)db=await openDB();const tx=db.transaction('notes','readwrite');tx.objectStore('notes').put({key:k,value:ta.value});const id='ind_'+k.replace('note_','');const el=document.getElementById(id);if(el){el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800);}},600);}
+const FS_KEY='baiboly_font_size';
+function applyFontSize(s){document.querySelectorAll('.body-text,.quote-block,.q-text,.info-block p,.fs-preview').forEach(el=>el.style.fontSize=s+'px');const sb=document.getElementById('font-seekbar');if(sb)sb.value=s;const lb=document.getElementById('fs-value-label');if(lb)lb.textContent=s+'px';document.querySelectorAll('.fs-preset-btn').forEach(b=>b.classList.toggle('active',parseInt(b.getAttribute('onclick').match(/\d+/)[0])===s));}
+function onFontSeek(v){applyFontSize(parseInt(v));localStorage.setItem(FS_KEY,v);}
+function setFontSize(s){applyFontSize(s);localStorage.setItem(FS_KEY,s);}
+function openFontSheet(){document.getElementById('fontsize-overlay').classList.add('open');}
+function closeFontSheet(){document.getElementById('fontsize-overlay').classList.remove('open');}
+function closeFontOutside(e){if(e.target===document.getElementById('fontsize-overlay'))closeFontSheet();}
+new IntersectionObserver(entries=>{document.getElementById('toolbar').classList.toggle('visible',!entries[0].isIntersecting);},{threshold:0.1}).observe(document.getElementById('hero'));
+applyFontSize(parseInt(localStorage.getItem(FS_KEY))||16);initDB();
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alatsinainy - AVY ANY ATENA HATRANY KORINTO</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:#111318;color:#e8e8e8}
+#toolbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(17,19,24,.96);display:flex;align-items:center;padding:0 16px;z-index:100;border-bottom:1px solid #2e3347;transform:translateY(-100%);transition:transform .35s}
+#toolbar.visible{transform:translateY(0)}
+#toolbar .tb-title{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e8e8e8;flex:1}
+#font-btn{position:fixed;top:12px;right:16px;z-index:200;background:rgba(34,39,54,.92);border:1px solid #2e3347;border-radius:8px;color:#e8e8e8;cursor:pointer;padding:6px 12px;font-size:14px;font-weight:600}
+#fontsize-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;align-items:flex-end}
+#fontsize-overlay.open{display:flex}
+#fontsize-sheet{background:#1a1e27;border-radius:20px 20px 0 0;width:100%;padding:0 0 32px;transform:translateY(100%);transition:transform .35s;border-top:1px solid #2e3347}
+#fontsize-overlay.open #fontsize-sheet{transform:translateY(0)}
+#fontsize-handle{width:40px;height:4px;background:#2e3347;border-radius:2px;margin:10px auto 0}
+#fontsize-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid #2e3347}
+#fontsize-header h3{font-size:17px;color:#c9a84c}
+#fontsize-close{background:#222736;border:none;color:#e8e8e8;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer}
+#fontsize-body{padding:24px}
+.fs-preview{background:#222736;border:1px solid #2e3347;border-radius:12px;padding:14px 16px;margin-bottom:24px;line-height:1.7;color:#e8e8e8}
+.fs-controls{display:flex;align-items:center;gap:14px}
+.fs-icon{font-size:13px;color:#9aa0b2;font-weight:600}
+.fs-icon.big{font-size:20px}
+#font-seekbar{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:#2e3347;outline:none;cursor:pointer}
+#font-seekbar::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#4e7bdb;border:3px solid #fff;cursor:pointer}
+#fs-value-label{font-size:13px;color:#7aa3f5;font-weight:600;min-width:36px;text-align:right}
+.fs-presets{display:flex;gap:8px;margin-top:20px;justify-content:center;flex-wrap:wrap}
+.fs-preset-btn{background:#222736;border:1px solid #2e3347;border-radius:8px;color:#9aa0b2;font-family:Georgia,serif;font-size:13px;padding:6px 14px;cursor:pointer}
+.fs-preset-btn.active{background:#4e7bdb;border-color:#4e7bdb;color:#fff}
+#hero{position:relative;height:260px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 24px 32px;text-align:center}
+#hero-bg{position:absolute;inset:0;background-image:url('file:///android_asset/header.jpg');background-size:cover;background-position:center;filter:brightness(.45)}
+#hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,#111318 100%)}
+#hero-content{position:relative;z-index:1}
+#hero h1{font-size:22px;font-weight:700;letter-spacing:1px;line-height:1.25;text-shadow:0 2px 12px rgba(0,0,0,.8);margin-bottom:8px}
+#hero .date-tag{font-size:13px;color:rgba(255,255,255,.7)}
+#content{max-width:680px;margin:0 auto;padding:24px 20px 80px}
+.info-block{background:#1a1e27;border:1px solid #2e3347;border-radius:12px;padding:16px 18px;margin-bottom:16px;border-left:3px solid #c9a84c}
+.info-block .label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c9a84c;margin-bottom:8px;font-weight:600}
+.info-block p{font-size:14px;line-height:1.65;color:#9aa0b2;text-align:justify}
+.section-header{margin:28px 0 18px;display:flex;align-items:center;gap:12px}
+.section-header .pill{background:#222736;border:1px solid #2e3347;border-radius:20px;padding:4px 14px;font-size:11px;letter-spacing:1px;color:#9aa0b2;text-transform:uppercase;white-space:nowrap}
+.section-header .line{flex:1;height:1px;background:#2e3347}
+.section-header h2{font-size:16px;color:#c9a84c;white-space:nowrap}
+.grand-titre{font-size:22px;font-weight:700;color:#c9a84c;text-align:center;margin:28px 0 16px;letter-spacing:.5px}
+.sous-titre{font-size:16px;font-weight:600;color:#7aa3f5;margin:20px 0 12px;padding-left:4px;border-left:3px solid #4e7bdb}
+.body-text{font-size:16px;line-height:1.8;color:#e8e8e8;margin-bottom:16px;text-align:justify}
+.v-link{color:#7aa3f5;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;white-space:nowrap}
+.quote-block{background:#1a1e27;border-left:3px solid #4e7bdb;border-radius:0 12px 12px 0;padding:16px 18px;margin:20px 0;font-style:italic;font-size:15px;line-height:1.7;color:#9aa0b2;text-align:justify}
+.quote-block cite{display:block;margin-top:8px;font-size:12px;color:#9aa0b2;font-style:normal}
+.question-card{background:#1a1e27;border:1px solid #2e3347;border-radius:16px;padding:20px;margin:20px 0}
+.question-card .q-text{font-size:17px;font-weight:600;line-height:1.6;margin-bottom:16px;color:#e8e8e8;text-align:justify}
+.verse-note-group{background:#222736;border:1px solid #2e3347;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.note-solo{width:100%;min-height:80px;background:rgba(0,0,0,.25);border:1px solid #2e3347;border-radius:8px;color:#e8e8e8;font-family:Georgia,serif;font-size:14px;padding:10px 12px;resize:vertical;outline:none;line-height:1.6}
+.note-solo::placeholder{color:#555}
+.note-solo:focus{border-color:#4e7bdb}
+.save-ind{font-size:11px;color:#7aa3f5;margin-top:4px;opacity:0;transition:opacity .4s;text-align:right}
+.save-ind.show{opacity:1}
+.bullet-list{padding-left:0;margin:12px 0 16px;list-style:none}
+.bullet-list li{padding:8px 0 8px 20px;border-bottom:1px solid #2e3347;color:#e8e8e8;font-size:16px;line-height:1.7;position:relative;text-align:justify}
+.bullet-list li:before{content:'\2022';color:#c9a84c;position:absolute;left:0;font-size:18px}
+#popup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:flex-end}
+#popup-overlay.open{display:flex}
+#popup{background:#1a1e27;border-radius:20px 20px 0 0;width:100%;max-height:75vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .35s}
+#popup-overlay.open #popup{transform:translateY(0)}
+#popup-handle{width:40px;height:4px;background:#2e3347;border-radius:2px;margin:10px auto 0;flex-shrink:0}
+#popup-header{display:flex;align-items:center;padding:14px 20px 12px;gap:10px;border-bottom:1px solid #2e3347;flex-shrink:0}
+#popup-header h3{font-size:17px;flex:1;color:#e8e8e8}
+#popup-close{background:#222736;border:none;color:#e8e8e8;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer}
+#popup-body{overflow-y:auto;padding:20px;flex:1;font-size:15px;line-height:1.9;color:#e8e8e8;text-align:justify}
+#popup-body .vn{font-weight:700;color:#7aa3f5;margin-right:6px}
+#popup-body p{margin-bottom:12px}</style>
+</head>
+<body>
+<div id="toolbar"><span class="tb-title">Alatsinainy - AVY ANY ATENA HATRANY KORINTO</span></div>
+<button id="font-btn" onclick="openFontSheet()">A&#8314;</button>
+<div id="fontsize-overlay" onclick="closeFontOutside(event)">
+  <div id="fontsize-sheet">
+    <div id="fontsize-handle"></div>
+    <div id="fontsize-header"><h3>Haben'ny soratra</h3><button id="fontsize-close" onclick="closeFontSheet()">&#x2715;</button></div>
+    <div id="fontsize-body">
+      <div class="fs-preview" id="fs-preview">Ny teninao dia nataoko tao am-poko.</div>
+      <div class="fs-controls"><span class="fs-icon">A</span><input type="range" id="font-seekbar" min="13" max="24" step="1" value="16" oninput="onFontSeek(this.value)"><span class="fs-icon big">A</span><span id="fs-value-label">16px</span></div>
+      <div class="fs-presets">
+        <button class="fs-preset-btn" onclick="setFontSize(13)">Kely</button>
+        <button class="fs-preset-btn active" onclick="setFontSize(16)">Kely kokoa</button>
+        <button class="fs-preset-btn" onclick="setFontSize(19)">Lehibe kokoa</button>
+        <button class="fs-preset-btn" onclick="setFontSize(22)">Lehibe</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="hero"><div id="hero-bg"></div>
+  <div id="hero-content"><h1>AVY ANY ATENA HATRANY KORINTO</h1><div class="date-tag">Alatsinainy 29 Jona 2026</div></div>
+</div>
+<div id="content">
+<div class="section-header"><div class="pill">Fizarana Alatsinainy</div><div class="line"></div><h2>LESONA 1</h2></div>
+<div class="info-block"><div class="label">Velomin'ny teniny:</div><p><span class="v-link" onclick="openPopup('Job. 3')">Job. 3</span></p></div>
+<div class="question-card"><div class="q-text">Vakio ny <span class="v-link" onclick="openPopup('Asa. 17:16-34')">Asa. 17:16-34</span> . Taiza i Paoly talohan'ny nandehanany tany Korinto ary Inona no nataony tany?</div><div class="verse-note-group"><textarea class="note-solo" placeholder="Fanamarihana..." data-key="note_alatsinainy__avy_any_atena_hatrany_korinto_q1" oninput="saveNote(this)"></textarea><div class="save-ind" id="ind_alatsinainy__avy_any_atena_hatrany_korinto_q1">&#x2713; Voatahiry</div></div></div>
+<p class="body-text">Manoritsoritra ny asa fitorian'i Paoly tamin'ny Atenianina mialoha ny nandehanany tany Korinto ny <span class="v-link" onclick="openPopup('Asa. 17:16-34')">Asa. 17:16-34</span> . Hita fa tsy fikasany ny hitsidika an'i Atena tamin'io fotoana io, fa ireo namany nanampy azy no nitondra azy tao noho ny fanenjehana niseho tao Beria (<span class="v-link" onclick="openPopup('Asa. 17:13-15')">Asa. 17:13-15</span>).</p>
+<p class="body-text">Niverina tany Beria ireo namana niaraka tamin'i Paoly nankany Atena, nitondra hafatra ho an'i Timoty sy Silasy mba hankanesan'izy ireo faingana any amin'i Paoly (<span class="v-link" onclick="openPopup('Asa. 17:15')">Asa. 17:15</span>). Momba izay nataon'i Paoly teo am-piandrasana azy ireo no resahina ao amin'ny <span class="v-link" onclick="openPopup('Asa. 17:16')">Asa. 17:16</span> 34 . Niresaka momba an'i Jesosy izy tao amin'ny synagoga, teo an-kianja, ary tao Areopago. Tsy hainy mihitsy ny tsy hiresaka momba an'i Jesosy ary nohararaotiny ny fotoana rehetra nanaovana izany.</p>
+<div class="question-card"><div class="q-text">Vakio ny <span class="v-link" onclick="openPopup('Asa. 18:1-11')">Asa. 18:1-11</span> . Inona no nataon'i Paoly rehefa tonga tany Korinto lzy, sy nandritra ny fotoana rehetra nitoerany tao amin'izany tanàna lzany?</div><div class="verse-note-group"><textarea class="note-solo" placeholder="Fanamarihana..." data-key="note_alatsinainy__avy_any_atena_hatrany_korinto_q2" oninput="saveNote(this)"></textarea><div class="save-ind" id="ind_alatsinainy__avy_any_atena_hatrany_korinto_q2">&#x2713; Voatahiry</div></div></div>
+<p class="body-text">Nankany Korinto i Paoly tamin'ny diany misionera faharoa. Herintaona sy tapany no nitoeran'i Paoly tao araka ny lazain'i Lioka.</p>
+<p class="body-text">Tao amin'ny synagoga no nanombohan'i Paoly ny asa misionerany (<span class="v-link" onclick="openPopup('Asa. 18:4-6')">Asa. 18:4-6</span>). Fanaony izany, araka ny voalazan'ny <span class="v-link" onclick="openPopup('Asa. 17:1,2')">Asa. 17:1,2</span> . Narahiny ilay paikady hoe &quot;amin'ny Jiosy aloha&quot; (<span class="v-link" onclick="openPopup('Rom. 1:16')">Rom. 1:16</span> ;<span class="v-link" onclick="openPopup('Asa. 13:46')">Asa. 13:46</span>), araka ny nandidian'i Jesosy ireo apostoliny (jereo ny <span class="v-link" onclick="openPopup('Asa. 1:8')">Asa. 1:8</span>).</p>
+<p class="body-text">Nony tafaraka taminy tany Korinto ihany i Silasy sy Timoty, dia &quot;voaterin'ny teny Paoly ka nanambara tamin'ny Jiosy fa Jesosy no Kristy&quot; - <span class="v-link" onclick="openPopup('Asa. 18:5')">Asa. 18:5</span> . Ny nampianatra ny tenin' Andriamanitra&quot; no nataon'i Paoly anton-draharaha nandritra ny nitoerany tao Korinto (<span class="v-link" onclick="openPopup('Asa. 18:11')">Asa. 18:11</span>). Tao anatin'izany tontolon-kevitra izany koa no nanambarany ireo teny malaza hoe: &quot;Fa ninia tsy hahafantatra zavatra hafa teo aminareo [Korintianina] aho, afa-tsy Jesosy Kristy, indrindra fa lzy voahombo tamin'ny hazo fijaliana&quot;- <span class="v-link" onclick="openPopup('1 Kor. 2:2')">1 Kor. 2:2</span> .</p>
+<div class="question-card"><div class="q-text">Inona no azontsika ianarana avy amin'ny asa misionera nata on'l Paoly tany Atena sy Korinto momba ny fanararaotana ny fotoana rehetra hitoriana ny filazantsara?</div><div class="verse-note-group"><textarea class="note-solo" placeholder="Fanamarihana..." data-key="note_alatsinainy__avy_any_atena_hatrany_korinto_q3" oninput="saveNote(this)"></textarea><div class="save-ind" id="ind_alatsinainy__avy_any_atena_hatrany_korinto_q3">&#x2713; Voatahiry</div></div></div>
+<p class="body-text">Eritrereto Ireo fotoana ahafahanao mizara an'i Jesosy amin'ny hafa sy ny fomba hampiasana izany.</p>
+
+</div>
+<div id="popup-overlay" onclick="closePopupOutside(event)">
+  <div id="popup"><div id="popup-handle"></div>
+    <div id="popup-header"><span>&#128214;</span><h3 id="popup-title">&#8212;</h3><button id="popup-close" onclick="closePopup()">&#x2715;</button></div>
+    <div id="popup-body"></div>
+  </div>
+</div>
+<script>const B={"1 Kor. 2:2":[{n:"",t:"[2] Fa ninia tsy hahafantatra zavatra hafa teo aminareo aho, afa-tsy Jesosy Kristy, indrindra fa Izy voahombo tamin'ny hazo fijaliana;"}],
+"Asa. 18:11":[{n:"",t:"[11] Ary izy nitoetra teo herintaona sy enim-bolana ka nampianatra ny tenin'Andriamanitra teo aminy."}],
+"Asa. 17:16":[{n:"", t:"[16]  Ary raha niandry azy tany Atena Paoly, dia taitra tao anatiny ny fanahiny, raha nahita ny tanàna feno sampy izy."}],
+"Asa. 18:5":[{n:"",t:"[5] Ary rehefa tafidina avy tany Makedonia Silasy sy Timoty, dia voaterin'ny teny Paoly ka nanambara tamin'ny Jiosy fa Jesosy no Kristy."}],
+"Asa. 1:8":[{n:"",t:"[8] Fa hahazo hery ianareo amin'ny hilatsahan'ny Fanahy Masina aminareo, ary ho vavolombeloko any Jerosalema sy eran'i Jodia sy Samaria ary hatramin'ny faran'ny tany."}],
+"Asa. 13:46":[{n:"",t:"[46] Ary Paoly sy Barnabasy dia niteny tamin'ny fahasahiana ka nanao hoe: Hianareo no tsy maintsy nitoriana ny tenin'Andriamanitra aloha; fa rehefa mandà izany ianareo ka manao ny tenanareo ho tsy miendrika hahazo fiainana mandrakizay, dia indro, mitodika mankany amin'ny jentilisa izahay;"}],
+"Rom. 1:16":[{n:"",t:"[16] Fa tsy menatra ny filazantsara aho; fa herin'Andriamanitra ho famonjena izay rehetra mino izany, amin'ny Jiosy aloha, dia vao amin'ny jentilisa koa."}],
+"Asa. 17:1,2":[{n:"",t:"[1]  Ary rehefa nandeha namaky an'i Amfipolia sy Apolonia izy, dia tonga tao Tesalonika, ary nisy synagogan'ny Jiosy tao."},{n:"",t:"[2] Ary Paoly dia niditra tao araka ny fanaony; ary Sabata telo no niadiany hevitra avy amin'ny Soratra Masina tamin'ny olona tao."}],
+"Asa. 18:4-6":[{n:"",t:"[4] Ary niady hevitra isan-tSabata tao amin'ny synagoga izy ka nampanaiky ny Jiosy sy ny jentilisa."},{n:"",t:"[5] Ary rehefa tafidina avy tany Makedonia Silasy sy Timoty, dia voaterin'ny teny Paoly ka nanambara tamin'ny Jiosy fa Jesosy no Kristy."},{n:"",t:"[6] Ary nony nanohitra sy niteny ratsy ireo, dia nanopakopa-damba izy ka nanao taminy hoe: Aoka ho ao an-dohanareo ny ranareo; afaka aho; ary amin'izao sisa izao dia hankany amin'ny jentilisa aho."}],
+"Asa. 18:1-11":[{n:"",t:"[1]  Ary rehefa afaka izany, dia niala tany Atena Paoly ka nankany Korinto."},{n:"",t:"[2] Ary izy nahita Jiosy anankiray atao hoe Akoila, izay teraka tany Ponto, vao avy tany Italia, ary Prisila vadiny (fa Klaodio efa nandidy ny Jiosy rehetra hiala tany Roma), dia nankeo amin'izy mivady Paoly."},{n:"",t:"[3] Ary satria niray raharaha taminy izy, dia nitoetra tao aminy ka niasa; fa ny manao lay no raharahany."},{n:"",t:"[4] Ary niady hevitra isan-tSabata tao amin'ny synagoga izy ka nampanaiky ny Jiosy sy ny jentilisa."},{n:"",t:"[5] Ary rehefa tafidina avy tany Makedonia Silasy sy Timoty, dia voaterin'ny teny Paoly ka nanambara tamin'ny Jiosy fa Jesosy no Kristy."},{n:"",t:"[6] Ary nony nanohitra sy niteny ratsy ireo, dia nanopakopa-damba izy ka nanao taminy hoe: Aoka ho ao an-dohanareo ny ranareo; afaka aho; ary amin'izao sisa izao dia hankany amin'ny jentilisa aho."},{n:"",t:"[7] Ary raha niala teo izy, dia niditra tao an-tranon'ny lehilahy atao hoe Titosy Josto, izay nivavaka tamin'Andriamanitra; ary ny tranony nifanolotra tamin'ny synagoga."},{n:"",t:"[8] Ary Krispo, mpanapaka ny synagoga, mbamin'ny ankohonany rehetra dia nino ny Tompo; ary maro koa ny Korintiana, raha nandre, dia nino ka natao batisa."},{n:"",t:"[9] Ary ny Tompo niteny tamin'i Paoly tamin'ny fahitana nony alina ka nanao hoe: Aza matahotra, fa mitenena ihany, ka aza mangina;"},{n:"",t:"[10] fa Izaho momba anao, ary tsy hisy olona hihazona anao hanisy ratsy anao; fa manana olona maro amin'ity tanàna ity Aho."},{n:"",t:"[11] Ary izy nitoetra teo herintaona sy enim-bolana ka nampianatra ny tenin'Andriamanitra teo aminy."}],
+"Asa. 17:15":[{n:"",t:"[15] Ary izay nanatitra an'i Paoly dia nitondra azy nankany Atena; ary rehefa nahazo teny holazainy amin'i Silasy sy Timoty izy mba hankanesan'izy roa lahy any aminy faingana, dia lasa nandeha ireo."}],
+"Asa. 17:13-15":[{n:"",t:"[13] Fa raha ren'ny Jiosy tany Tesalonika fa Paoly nitory ny tenin'Andriamanitra tany Beria, dia nankany izy ka nampikotrana sy nampitabataba ny vahoaka."},{n:"",t:"[14] Ary niaraka tamin'izay dia nasain'ny rahalahy nandeha hatrany amoron-dranomasina Paoly; fa Silasy sy Timoty kosa dia mbola nijanona teo ihany."},{n:"",t:"[15] Ary izay nanatitra an'i Paoly dia nitondra azy nankany Atena; ary rehefa nahazo teny holazainy amin'i Silasy sy Timoty izy mba hankanesan'izy roa lahy any aminy faingana, dia lasa nandeha ireo."}],
+"Asa. 17:16-34":[{n:"",t:"[16]  Ary raha niandry azy tany Atena Paoly, dia taitra tao anatiny ny fanahiny, raha nahita ny tanàna feno sampy izy."},{n:"",t:"[17] Ary izy niady hevitra tamin'ny Jiosy sy ny proselyta tao amin'ny synagoga sy tamin'izay tafavory tany an-tsena isan'andro."},{n:"",t:"[18] Ary ny olon-kendry sasany tamin'ny Epikoreana sy ny Stoika nanohitra azy koa, ka hoy ny sasany: Inona no tian'io mpibedibedy io holazaina? Ary hoy kosa ny sasany: Toa mitory andriamani-baovao izy, satria Jesosy sy ny fitsanganan'ny maty no notoriny."},{n:"",t:"[19] Ary ireo naka azy, dia nitondra azy ho any Areopago ka nanao hoe: Moa mba mahazo mahafantatra izany fampianarana vaovao lazainao izany izahay?"},{n:"",t:"[20] Fa mampandre ny sofinay zavatra hafahafa izay tsy fantatray ianao; koa tianay ho fantatra izay hevitr'izany zavatra izany."},{n:"",t:"[21] (Fa ny Ateniana rehetra sy ny vahiny izay nitoetra teo tsy nandany ny androny tamin'ny zavatra hafa, afa-tsy ny hilaza na hihaino zava-baovao.)"},{n:"",t:"[22] Ary Paoly nitsangana teo afovoan'i Areopago ka nanao hoe: Ry lehilahy Ateniana, hitako fa amin'ny zavatra rehetra dia fatra-pivavaka amin'ny andriamanitrareo indrindra ianareo."},{n:"",t:"[23] Fa raha nandeha aho ka nandinika izay zavatra ivavahanareo, dia nahita alitara anankiray misy izao soratra izao: HO AN'IZAY ANDRIAMANITRA TSY FANTATRA. Koa izay ivavahanareo, kanefa tsy fantatrareo, dia izany no toriko aminareo,"},{n:"",t:"[24] dia Andriamanitra Izay nanao izao tontolo izao sy ny ao aminy rehetra, Izy no Tompon'ny lanitra sy ny tany ka tsy mba mitoetra ao anaty tempoly nataon-tanana,"},{n:"",t:"[25] sady tsy mba tompoin'ny tànan'olona toa mila zavatra, fa Izy ihany no manome izao rehetra izao aina sy fofon'aina ary ny zavatra rehetra;"},{n:"",t:"[26] ary ny firenena rehetra avy amin'ny iray ihany dia namponeniny ambonin'ny tany rehetra, ary efa notendreny ny fotoan'andro sy ny faritry ny fonenany,"},{n:"",t:"[27] mba hitady an'Andriamanitra izy, raha tàhiny hahatsapa ka hahita Azy, kanefa tsy mba lavitra antsika rehetra Izy;"},{n:"",t:"[28] fa Izy no ivelomantsika sy ihetsehantsika ary iainantsika; araka ny nataon'ny mpanao tonon-kira sasany teo aminareo hoe: Fa terany koa isika."},{n:"",t:"[29] Ary satria terak'Andriamanitra isika, dia tsy mety raha ny fomban'Andriamanitra no ataontsika ho tahaka ny volamena, na volafotsy, na vato voasoratry ny fahaizana aman-tsain'olombelona."},{n:"",t:"[30] Ary Andriamanitra ninia tsy nijery ny andron'ny tsi-fahalalana; fa ankehitriny Izy mandidy ny olona rehetra amin'izao tontolo izao hibebaka,"},{n:"",t:"[31] satria Izy efa nanendry andro iray, izay hitsarany izao tontolo izao amin'ny fahamarinana amin'ny alalan'ny Lehilahy iray voatendriny, koa efa nanome vavolombelona hampino ny olona rehetra izany Izy tamin'ny nananganany Azy tamin'ny maty."},{n:"",t:"[32] Ary raha nahare ny amin'ny fitsanganan'ny maty izy, dia nihomehy ny sasany; ary ny sasany kosa nanao hoe: Mbola hihaino anao indray izahay ny amin'izany zavatra izany."},{n:"",t:"[33] Ary Paoly dia niala teo aminy."},{n:"",t:"[34] Anefa ny olona sasany niray taminy ka nino; mba naman'izany Dionysio Areopagita sy ny vehivavy anankiray atao hoe Damary ary ny sasany koa."}],
+"Job. 3":[{n:"",t:"[NY fitarainan'i Joba noho ny fahoriana nanjo azy]"},{n:"",t:"[1]  Rehefa afaka izany, dia niloa-bava Joba ka nanozona ny androny"},{n:"",t:"[2] nanao hoe:"},{n:"",t:"[3] Foàna anie ny andro nahaterahako sy ny alina izay nanao hoe: Misy zazalahy vao torontoronina!"},{n:"",t:"[4] Izany andro izany dia aoka ho maizina, ary aoka tsy hitady azy Andriamanitra any ambony; ary aoka tsy hisy mazava hamirapiratra aminy;"},{n:"",t:"[5] Aoka ny aizina sy ny aloky ny fahafatesana hahalasa azy indray; Aoka ny rahona hitatao eo amboniny; Aoka izay zavatra mahamaizina ny andro hampahatsiravina azy."},{n:"",t:"[6] Izany alina izany aoka ny aizim-pito hisambotra azy; Aoka tsy hiara-mifaly amin'ny andron'ny taona izy. Ary tsy ho tonga amin'ny isan'ny volana;"},{n:"",t:"[7] Indro izany alina izany aoka ho momba izy; Aoka tsy ho velona ao ny hoby;"},{n:"",t:"[8] Aoka hanozona azy ny mpanozona andro, Izay mahay mamoha ny dragona;"},{n:"",t:"[9] Aoka ho maizina ny kintan'ny marainany; Aoka hiandry ny mazava izy, nefa tsy hisy, ary aoka tsy ho faly mahita ny hodimason'ny maraina izy,"},{n:"",t:"[10] Satria tsy nanidy ny varavaran'ny kibon'ineny izy ka tsy nanafina fahoriana tamin'ny masoko."},{n:"",t:"[11] Nahoana re aho no tsy maty hatrany am-bohoka e, ary tsy niala aina, fony vao nivoaka avy tany an-kibo e?"},{n:"",t:"[12] Nahoana no nisy lohalika niandry ahy? Ary nahoana no nisy nono hinonoako?"},{n:"",t:"[13] Fa raha tsy izany, dia efa nandry aho toy izay ka niadana, eny, natory aho ka afa-tsasatra,"},{n:"",t:"[14] Teo amin'ny mpanjaka sy ny mpanolo-tsaina avy amin'ny tany, izay nanao ireny tanàna efa rava,"},{n:"",t:"[15] Na teo amin'ny andriandahy izay manana volamena sady mameno volafotsy ny tranony;"},{n:"",t:"[16] Na efa tsy ary toy ny zaza tsy tonga volana aho ka nafenina, dia toy ny zaza izay tsy nahita ny mazava akory."},{n:"",t:"[17] Any no itsaharan'ny ratsy fanahy tsy hampitebiteby, ary any ny reraka no afa-tsasatra;"},{n:"",t:"[18] Miara-miadana avokoa ny mpifatotra; Tsy mandre ny feon'ny mpampiasa izy."},{n:"",t:"[19] Samy any ny kely sy ny lehibe, Ary ny mpanompo dia afaka amin'ny tompony."},{n:"",t:"[20] Nahoana no fahazavana no mba omena ny reraka, ary fiainana ho an'izay latsaka amin'ny fangidiana?"},{n:"",t:"[21] Izay miandry fahafatesana, nefa tsy avy izy, sady mitady azy mihoatra noho ny fitady harena nafenina:"},{n:"",t:"[22] Izay faly indrindra sady ravoravo, raha mahita ny fasana,"},{n:"",t:"[23] Dia olona izay mandeha ao amin'ny maizina sady voafefin'Andriamanitra manodidina."},{n:"",t:"[24] Fa mialoha ny haninkaniko ny fitolokoko, ary migororoana toy ny rano ny fidradradradrako;"},{n:"",t:"[25] Fa Izay atahorako no mahazo ahy, ary izay angovitako no manjo ahy."},{n:"",t:"[26] Tsy mbola nahita fiadanana na fitsaharana na fakàna aina akory aza aho, dia tonga indray ny tebiteby."}]};
+function openPopup(ref){document.body.style.overflow='hidden';document.getElementById('popup-title').textContent=ref.toUpperCase();document.getElementById('popup-body').innerHTML='<p style="color:#9aa0b2;font-style:italic;text-align:center;padding:20px 0">Miandry...</p>';document.getElementById('popup-overlay').classList.add('open');setTimeout(()=>{const k=Object.keys(B).find(k=>k.toLowerCase()===ref.toLowerCase());const vs=k?B[k]:null;const b=document.getElementById('popup-body');if(vs&&vs.length){b.innerHTML='<p style="font-size:18px;font-weight:700;color:#c9a84c;margin-bottom:16px">'+ref.replace(/:[\d].*/,'').trim().toUpperCase()+'</p>'+vs.map(v=>'<p>'+(v.n?'<span class=\"vn\">['+v.n+']</span>':'')+v.t+'</p>').join('');}else{b.innerHTML='<p style="color:#9aa0b2;font-style:italic">Tsy hita: <strong>'+ref+'</strong></p>';}},180);}
+function closePopup(){document.body.style.overflow='';document.getElementById('popup-overlay').classList.remove('open');}
+function closePopupOutside(e){if(e.target===document.getElementById('popup-overlay'))closePopup();}
+let db;function openDB(){return new Promise((r,j)=>{const q=indexedDB.open('BaibolyStudyDB',1);q.onupgradeneeded=e=>e.target.result.createObjectStore('notes',{keyPath:'key'});q.onsuccess=e=>r(e.target.result);q.onerror=e=>j(e);});}
+async function initDB(){db=await openDB();document.querySelectorAll('[data-key]').forEach(async ta=>{const tx=db.transaction('notes','readonly');const q=tx.objectStore('notes').get(ta.dataset.key);q.onsuccess=e=>{if(e.target.result)ta.value=e.target.result.value;};});}
+let st={};function saveNote(ta){const k=ta.dataset.key;clearTimeout(st[k]);st[k]=setTimeout(async()=>{if(!db)db=await openDB();const tx=db.transaction('notes','readwrite');tx.objectStore('notes').put({key:k,value:ta.value});const id='ind_'+k.replace('note_','');const el=document.getElementById(id);if(el){el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800);}},600);}
+const FS_KEY='baiboly_font_size';
+function applyFontSize(s){document.querySelectorAll('.body-text,.quote-block,.q-text,.info-block p,.fs-preview').forEach(el=>el.style.fontSize=s+'px');const sb=document.getElementById('font-seekbar');if(sb)sb.value=s;const lb=document.getElementById('fs-value-label');if(lb)lb.textContent=s+'px';document.querySelectorAll('.fs-preset-btn').forEach(b=>b.classList.toggle('active',parseInt(b.getAttribute('onclick').match(/\d+/)[0])===s));}
+function onFontSeek(v){applyFontSize(parseInt(v));localStorage.setItem(FS_KEY,v);}
+function setFontSize(s){applyFontSize(s);localStorage.setItem(FS_KEY,s);}
+function openFontSheet(){document.getElementById('fontsize-overlay').classList.add('open');}
+function closeFontSheet(){document.getElementById('fontsize-overlay').classList.remove('open');}
+function closeFontOutside(e){if(e.target===document.getElementById('fontsize-overlay'))closeFontSheet();}
+new IntersectionObserver(entries=>{document.getElementById('toolbar').classList.toggle('visible',!entries[0].isIntersecting);},{threshold:0.1}).observe(document.getElementById('hero'));
+applyFontSize(parseInt(localStorage.getItem(FS_KEY))||16);initDB();
+</script>
+</body>
+</html>
